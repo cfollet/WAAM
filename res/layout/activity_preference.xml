@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="Settings" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pagination_preference"
+            android:summary="@string/pagination_preference_summary"
+            android:title="@string/pagination_preference_title" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/gender_list_key"
+            android:entryValues="@array/gender_list_value"
+            android:key="gender_preference"
+            android:summary="%s"
+            android:title="@string/gender_preference_title" />
+
+        <SeekBarPreference
+            android:defaultValue="250"
+            android:key="@string/radius_preference_key"
+            android:max="500"
+            android:progress="50"
+            android:summary="10"
+            android:title="@string/radius_preference_title" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

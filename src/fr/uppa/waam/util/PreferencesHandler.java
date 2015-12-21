@@ -1,18 +1,18 @@
-package fr.uppa.waam.listeners;
+package fr.uppa.waam.util;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-public class PreferencesManager {
+public class PreferencesHandler {
 	
 	private Activity activity;
 	private Editor editor;
 	SharedPreferences preferences;
 	
 	
-	public PreferencesManager(Activity activity) {
+	public PreferencesHandler(Activity activity) {
 		super();
 		this.activity = activity;
 		this.preferences = this.activity.getPreferences(Context.MODE_PRIVATE);
@@ -29,5 +29,10 @@ public class PreferencesManager {
 	
 	public String get(String key){
 		return this.preferences.getString(key,null);
+	}
+	
+
+	public boolean isFirstTime(){
+		return get("firstTime") == null;
 	}
 }

@@ -10,6 +10,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +23,7 @@ import fr.uppa.waam.listeners.MyLocationListener;
 import fr.uppa.waam.listeners.SendMessageListener;
 import fr.uppa.waam.models.Message;
 import fr.uppa.waam.presenters.WallAdapter;
+import fr.uppa.waam.util.PreferencesHandler;
 
 public class WallActivity extends Activity {
 
@@ -45,6 +48,7 @@ public class WallActivity extends Activity {
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, this.locationListener);
 
+		this.init();
 	}
 
 	@Override
@@ -77,7 +81,7 @@ public class WallActivity extends Activity {
 
 			alertD.show();
 			break;
-			
+
 		case R.id.menu_preference:
 			Intent intent = new Intent();
 			intent.setClass(this, MyPreferenceActivity.class);
@@ -94,6 +98,14 @@ public class WallActivity extends Activity {
 		this.wallAdapter.clear();
 		this.wallAdapter.addAll(messages);
 		this.wallAdapter.notifyDataSetChanged();
+	}
+
+	private void init() {
+		PreferencesHandler ph = new PreferencesHandler(this);
+		if (ph.isFirstTime()) {
+			ph.save("firstTime", "yes");
+			PreferenceManager.setDefaultValues(this, R.layout.activity_preference, false);
+		}
 	}
 
 }

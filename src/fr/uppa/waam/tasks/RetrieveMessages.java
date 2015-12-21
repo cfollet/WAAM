@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import fr.uppa.waam.models.GeoLocation;
 import fr.uppa.waam.models.Message;
+import fr.uppa.waam.util.ServiceHandler;
 import fr.uppa.waam.views.WallActivity;
 
 public class RetrieveMessages extends AsyncTask<GeoLocation, Void, List<Message>> {

@@ -1,4 +1,4 @@
-package fr.uppa.waam.tasks;
+package fr.uppa.waam.util;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

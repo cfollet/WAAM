@@ -27,8 +27,9 @@ public class SendMessageListener implements OnClickListener {
 	public void onClick(DialogInterface dialog, int which) {
 		// create a message and ask the async task to send it
 		// Caution : if no GPS/location are known ! What to do ?
-		
-		//Message m = new Message(this.input.getText(), , new Date(), gender)
+		String content = this.input.getText().toString();
+		//GeoLocation location = 
+		//Message m = new Message(, , new Date(), gender)
 		//new SendMessage(this.activity).execute();
 	}
 
