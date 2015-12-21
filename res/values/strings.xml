@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WAAM</string>
+    <string name="action_settings">Préférences</string>
+    <string name="title_activity_preference">PreferenceActivity</string>
+    <string name="title_activity_message">MessageActivity</string>
+    <string name="title_activity_my_preference">MyPreferenceActivity</string>
+
+    <!-- Preference's labels -->
+    <string name="pagination_preference_title">Pagination</string>
+    <string name="pagination_preference_summary">Active la pagination sur le mur.</string>
+    <string name="gender_preference_title">Sexe</string>
+    <string name="gender_preference_summary">De quel sexe vous souhaitez être vu.</string>
+    
+    <string-array name="gender_list_key">
+        <item>Femme</item>
+        <item>Homme</item>
+    </string-array>
+    
+        <string-array name="gender_list_value">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+</resources>

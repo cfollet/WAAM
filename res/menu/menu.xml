@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+ 
+    <item
+        android:id="@+id/menu_message"
+        android:icon="@drawable/ic_action_message"
+        android:showAsAction="ifRoom"
+        android:title="Nouveau Message"/>
+    <item
+        android:id="@+id/menu_refresh"
+        android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="ifRoom"
+        android:title="Rafraichir"/>
+    <item
+        android:id="@+id/menu_preference"
+        android:showAsAction="ifRoom"
+        android:title="Peference"/>
+ 
+ 
+</menu>

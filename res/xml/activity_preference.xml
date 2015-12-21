@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="Settings" >
+        
+        <CheckBoxPreference
+        android:key="pref_sync"
+        android:title="@string/pagination_preference_title"
+        android:summary="@string/pagination_preference_summary"
+        android:defaultValue="true" />
+        
+        <ListPreference 
+    android:key="gender_preference"
+    android:title="@string/gender_preference_title"
+    android:entries="@array/gender_list_key"
+    android:entryValues="@array/gender_list_value"/>
+    </PreferenceCategory>
+    
+</PreferenceScreen>
