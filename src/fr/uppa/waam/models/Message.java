@@ -49,12 +49,12 @@ public class Message {
 			this.timestamp = formatter.parse(jsonMessage.getString(Message.JSON_TAG_TIMESTAMP));
 
 			// get GeoLocation Informations
-			double distance = jsonMessage.getDouble(GeoLocation.JSON_TAG_DISTANCE);
+			int distance = ((Number)jsonMessage.getDouble(GeoLocation.JSON_TAG_DISTANCE)).intValue();
 			JSONArray location = jsonMessage.getJSONArray(Message.JSON_TAG_LOCATION);
 			double latitude = location.getDouble(0);
 			double longitude = location.getDouble(1);
 			this.timestamp = new Date();
-			this.location = new GeoLocation(latitude, longitude, distance);
+			this.location = new GeoLocation(latitude, longitude, distance, 0);
 
 		} catch (Exception e) {
 			Log.i("test", e.getCause().toString());

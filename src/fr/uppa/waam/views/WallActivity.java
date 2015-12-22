@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,7 +24,6 @@ import fr.uppa.waam.listeners.MyLocationListener;
 import fr.uppa.waam.listeners.SendMessageListener;
 import fr.uppa.waam.models.Message;
 import fr.uppa.waam.presenters.WallAdapter;
-import fr.uppa.waam.util.PreferencesHandler;
 
 public class WallActivity extends Activity {
 
@@ -95,16 +95,21 @@ public class WallActivity extends Activity {
 	}
 
 	public void populate(List<Message> messages) {
+		Log.i("test", String.valueOf(messages.size()));
 		this.wallAdapter.clear();
 		this.wallAdapter.addAll(messages);
 		this.wallAdapter.notifyDataSetChanged();
 	}
 
 	private void init() {
-		PreferencesHandler ph = new PreferencesHandler(this);
-		if (ph.isFirstTime()) {
-			ph.save("firstTime", "yes");
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean isFirstTime = preferences.getBoolean("isFirstTime", true);
+		if(isFirstTime){
+			// Initialize the default value from the xml preferences file
 			PreferenceManager.setDefaultValues(this, R.layout.activity_preference, false);
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putBoolean("isFirstTime", false);
+			editor.commit();
 		}
 	}
 

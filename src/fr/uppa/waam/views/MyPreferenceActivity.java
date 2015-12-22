@@ -12,8 +12,9 @@ public class MyPreferenceActivity extends PreferenceActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.layout.activity_preference);
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		// then you use
-		Log.i("test", String.valueOf(prefs.getInt("radius_preference",0)));
+		SharedPreferences preferences = this.getPreferences(MODE_PRIVATE);
+		boolean isFirstTime = preferences.getBoolean("isFirstTime", true);
+		Log.i("test", String.valueOf(isFirstTime));
 	}
 }

@@ -22,7 +22,7 @@
     </string-array>
 
     <string name="radius_preference_title">Rayon</string>
-     <string name="radius_preference_key">radius_preference</string>
+     <string name="radius_preference_key">my_radius</string>
     <string name="radius_preference_summary">Rayon dans lesquels vous souhaitez voir les messages.</string>
 
 </resources>
