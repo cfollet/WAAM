@@ -12,6 +12,10 @@ public class GeoLocation {
 	public final static String JSON_TAG_RADIUS = "my_radius";
 	public final static int DEFAULT_RADIUS = 250;
 	public final static String JSON_TAG_DISTANCE = "meters";
+	
+	public final static String GET_TAG_LATITUDE = JSON_TAG_LATITUDE;
+	public final static String GET_TAG_LONGITUDE = JSON_TAG_LONGITUDE;
+	public final static String GET_TAG_RADIUS = JSON_TAG_RADIUS;
 
 	private double latitude;
 	private double longitude;
@@ -44,13 +48,18 @@ public class GeoLocation {
 	public List<NameValuePair> toNameValuePairs() {
 		List<NameValuePair> result = new ArrayList<NameValuePair>();
 
-		result.add(new BasicNameValuePair(GeoLocation.JSON_TAG_LATITUDE, String.valueOf(this.getLatitude())));
-		result.add(new BasicNameValuePair(GeoLocation.JSON_TAG_LONGITUDE, String.valueOf(this.getLongitude())));
-		result.add(new BasicNameValuePair(GeoLocation.JSON_TAG_RADIUS, String.valueOf(this.getRadius())));
+		result.add(new BasicNameValuePair(GeoLocation.GET_TAG_LATITUDE, String.valueOf(this.getLatitude())));
+		result.add(new BasicNameValuePair(GeoLocation.GET_TAG_LONGITUDE, String.valueOf(this.getLongitude())));
+		result.add(new BasicNameValuePair(GeoLocation.GET_TAG_RADIUS, String.valueOf(this.getRadius())));
 
 		return result;
 	}
 	
-	
+	@Override
+	public String toString() {
+		String result;
+		result = "GeoLocation("+this.getLatitude()+", "+this.getLongitude()+", "+this.getDistance()+", "+this.getRadius()+")";
+		return result;
+	}
 
 }

@@ -57,7 +57,7 @@ public class ServiceHandler {
                 if (params != null) {
                     httpPost.setEntity(new UrlEncodedFormEntity(params));
                 }
- 
+                Log.w("test", params.toString());
                 httpResponse = httpClient.execute(httpPost);
  
             } else if (method == GET) {

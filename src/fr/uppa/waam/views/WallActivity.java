@@ -64,7 +64,7 @@ public class WallActivity extends Activity {
 		case R.id.menu_message:
 			LayoutInflater layoutInflater = LayoutInflater.from(this);
 			View messageDialogView = layoutInflater.inflate(R.layout.activity_message, null);
-			EditText input = (EditText) findViewById(R.id.input);
+			EditText input = (EditText) messageDialogView.findViewById(R.id.input);
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
 			alertDialogBuilder.setView(messageDialogView);

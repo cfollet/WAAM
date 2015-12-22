@@ -33,4 +33,9 @@ public class SendMessage extends AsyncTask<Message, Void, Void> {
 		return null;
 	}
 	
+	@Override
+	protected void onPostExecute(Void result) {
+		this.progress.dismiss();
+	}
+	
 }

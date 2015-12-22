@@ -23,6 +23,9 @@ public class Message {
 	public final static String JSON_TAG_LOCATION = "geo";
 	public final static String JSON_TAG_TIMESTAMP = "time";
 	public final static String JSON_TAG_GENDER = "gender";
+	
+	public final static String POST_TAG_CONTENT = "my_message";
+	public final static String POST_TAG_GENDER = "my_gender";
 
 	public static final Integer MALE_CODE = 1;
 	public static final Integer FEMALE_CODE = 0;
@@ -64,10 +67,10 @@ public class Message {
 	public List<NameValuePair> toNameValuePairs() {
 		List<NameValuePair> result = new ArrayList<NameValuePair>();
 
-		result.add(new BasicNameValuePair(GeoLocation.JSON_TAG_LATITUDE, String.valueOf(this.location.getLatitude())));
-		result.add(new BasicNameValuePair(GeoLocation.JSON_TAG_LONGITUDE, String.valueOf(this.location.getLongitude())));
-		result.add(new BasicNameValuePair(Message.JSON_TAG_CONTENT, this.content));
-		result.add(new BasicNameValuePair(Message.JSON_TAG_GENDER, String.valueOf(this.getGender())));
+		result.add(new BasicNameValuePair(GeoLocation.GET_TAG_LATITUDE, String.valueOf(this.location.getLatitude())));
+		result.add(new BasicNameValuePair(GeoLocation.GET_TAG_LONGITUDE, String.valueOf(this.location.getLongitude())));
+		result.add(new BasicNameValuePair(Message.POST_TAG_CONTENT, this.content));
+		result.add(new BasicNameValuePair(Message.POST_TAG_GENDER, String.valueOf(this.getGender())));
 
 		return result;
 	}

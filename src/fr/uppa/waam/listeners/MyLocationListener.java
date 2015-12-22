@@ -33,20 +33,23 @@ public class MyLocationListener implements LocationListener {
 		editor.commit();
 
 		/** Get messages from async task **/
-		double latitude = 48.856614;//location.getLatitude();
-		double longitude = 2.352233;//location.getLongitude();
-		
+		// double latitude = 48.856614;
+		// double longitude = 2.352233;
+		double latitude = location.getLatitude();
+		double longitude = location.getLongitude();
+
 		int radius = preferences.getInt(GeoLocation.JSON_TAG_RADIUS, GeoLocation.DEFAULT_RADIUS);
-		Log.i("test", "radius="+String.valueOf(radius));
+		Log.i("test", "radius=" + String.valueOf(radius));
 		GeoLocation myLocation = new GeoLocation(latitude, longitude, 0, radius);
-		
+		Log.i("test", "get message from : " + location.toString());
 		new RetrieveMessages(this.activity).execute(myLocation);
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// if the position isn't fixed we unset the longitude and latitude from shared preferences.
-		if(status != LocationProvider.AVAILABLE){
+		// if the position isn't fixed we unset the longitude and latitude from
+		// shared preferences.
+		if (status != LocationProvider.AVAILABLE) {
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.remove(GeoLocation.JSON_TAG_LATITUDE);
