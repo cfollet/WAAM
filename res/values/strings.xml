@@ -10,8 +10,8 @@
     <!-- Preference's labels -->
     <string name="pagination_preference_title">Pagination</string>
     <string name="pagination_preference_summary">Active la pagination sur le mur.</string>
-    
     <string name="gender_preference_title">Sexe</string>
+
     <string-array name="gender_list_key">
         <item>Femme</item>
         <item>Homme</item>
@@ -22,7 +22,7 @@
     </string-array>
 
     <string name="radius_preference_title">Rayon</string>
-     <string name="radius_preference_key">my_radius</string>
+    <string name="radius_preference_key">my_radius</string>
     <string name="radius_preference_summary">Rayon dans lesquels vous souhaitez voir les messages.</string>
 
 </resources>

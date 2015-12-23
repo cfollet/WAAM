@@ -6,10 +6,9 @@ import android.location.LocationListener;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import fr.uppa.waam.models.GeoLocation;
 import fr.uppa.waam.presenters.WallAdapter;
-import fr.uppa.waam.tasks.RetrieveMessages;
+import fr.uppa.waam.tasks.RetrieveMessagesTask;
 import fr.uppa.waam.views.WallActivity;
 
 public class MyLocationListener implements LocationListener {
@@ -39,16 +38,14 @@ public class MyLocationListener implements LocationListener {
 		double longitude = location.getLongitude();
 
 		int radius = preferences.getInt(GeoLocation.JSON_TAG_RADIUS, GeoLocation.DEFAULT_RADIUS);
-		Log.i("test", "radius=" + String.valueOf(radius));
+		radius = 1000000;
 		GeoLocation myLocation = new GeoLocation(latitude, longitude, 0, radius);
-		Log.i("test", "get message from : " + location.toString());
-		new RetrieveMessages(this.activity).execute(myLocation);
+		new RetrieveMessagesTask(this.activity).execute(myLocation);
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// if the position isn't fixed we unset the longitude and latitude from
-		// shared preferences.
+		/**if the position isn't fixed we unset the longitude and latitude from shared preferences. **/
 		if (status != LocationProvider.AVAILABLE) {
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
 			SharedPreferences.Editor editor = preferences.edit();
@@ -66,7 +63,12 @@ public class MyLocationListener implements LocationListener {
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		Log.i("test", "location Down");
+		/**if the position isn't fixed we unset the longitude and latitude from shared preferences. **/
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.remove(GeoLocation.JSON_TAG_LATITUDE);
+		editor.remove(GeoLocation.JSON_TAG_LONGITUDE);
+		editor.commit();
 	}
 
 }

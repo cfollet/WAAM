@@ -3,12 +3,15 @@ package fr.uppa.waam.views;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -17,11 +20,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ListView;
 import fr.uppa.waam.R;
 import fr.uppa.waam.listeners.MyLocationListener;
 import fr.uppa.waam.listeners.SendMessageListener;
+import fr.uppa.waam.models.GeoLocation;
 import fr.uppa.waam.models.Message;
 import fr.uppa.waam.presenters.WallAdapter;
 
@@ -47,6 +52,9 @@ public class WallActivity extends Activity {
 		this.locationListener = new MyLocationListener(this, this.wallAdapter);
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, this.locationListener);
+
+		ActionBar actionBar = this.getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(this.getString(R.color.primary_indigo_500))));
 
 		this.init();
 	}
@@ -87,7 +95,8 @@ public class WallActivity extends Activity {
 			intent.setClass(this, MyPreferenceActivity.class);
 			this.startActivity(intent);
 			break;
-
+		case R.id.menu_refresh:
+			break;
 		default:
 			break;
 		}
@@ -104,7 +113,7 @@ public class WallActivity extends Activity {
 	private void init() {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		boolean isFirstTime = preferences.getBoolean("isFirstTime", true);
-		if(isFirstTime){
+		if (isFirstTime) {
 			// Initialize the default value from the xml preferences file
 			PreferenceManager.setDefaultValues(this, R.layout.activity_preference, false);
 			SharedPreferences.Editor editor = preferences.edit();

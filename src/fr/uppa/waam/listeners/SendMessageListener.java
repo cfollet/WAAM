@@ -10,7 +10,7 @@ import android.util.Log;
 import android.widget.EditText;
 import fr.uppa.waam.models.GeoLocation;
 import fr.uppa.waam.models.Message;
-import fr.uppa.waam.tasks.SendMessage;
+import fr.uppa.waam.tasks.SendMessageTask;
 import fr.uppa.waam.views.WallActivity;
 
 public class SendMessageListener implements OnClickListener {
@@ -40,7 +40,7 @@ public class SendMessageListener implements OnClickListener {
 			GeoLocation location = new GeoLocation(latitude, longitude, 0, 0);
 			Log.i("test", "Send message from :" + location.toString());
 			Message message = new Message(this.input.getText().toString(), location, new Date(), Integer.parseInt(gender));
-			new SendMessage(this.activity).execute(message);
+			new SendMessageTask(this.activity).execute(message);
 		}else{
 			
 		}

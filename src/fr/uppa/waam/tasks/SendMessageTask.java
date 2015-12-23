@@ -7,13 +7,13 @@ import fr.uppa.waam.util.ServiceHandler;
 import fr.uppa.waam.views.MessageActivity;
 import fr.uppa.waam.views.WallActivity;
 
-public class SendMessage extends AsyncTask<Message, Void, Void> {
+public class SendMessageTask extends AsyncTask<Message, Void, Void> {
 	private static final String BASE_URL = "http://www.iut-adouretud.univ-pau.fr/~olegoaer/waam/newMessage.php";
 
 	private volatile WallActivity activity;
 	private ProgressDialog progress; 
     
-	public SendMessage(WallActivity activity){
+	public SendMessageTask(WallActivity activity){
 			this.activity = activity;
 	    	this.progress = new ProgressDialog(this.activity);
 	}
@@ -29,7 +29,7 @@ public class SendMessage extends AsyncTask<Message, Void, Void> {
 	@Override
 	protected Void doInBackground(Message... params) {	
 		ServiceHandler handler = new ServiceHandler();
-		handler.makeServiceCall(SendMessage.BASE_URL, ServiceHandler.POST, params[0].toNameValuePairs());
+		handler.makeServiceCall(SendMessageTask.BASE_URL, ServiceHandler.POST, params[0].toNameValuePairs());
 		return null;
 	}
 	
