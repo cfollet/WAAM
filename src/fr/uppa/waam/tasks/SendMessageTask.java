@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import fr.uppa.waam.models.Message;
 import fr.uppa.waam.util.ServiceHandler;
-import fr.uppa.waam.views.MessageActivity;
 import fr.uppa.waam.views.WallActivity;
 
 public class SendMessageTask extends AsyncTask<Message, Void, Void> {

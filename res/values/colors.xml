@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
        <!-- Male Theme -->
-    <color name="primary_indigo_500">#3F51B5</color>
-    <color name="primary_indigo_100">#C5CAE9</color>
-    <color name="primary_indigo_700">#303F9F</color>
+    <color name="primary_indigo_500">#2196F3</color>
+    <color name="primary_indigo_100">#BBDEFB</color>
+    <color name="primary_indigo_700">#1976D2</color>
     <color name="accent_pink_200">#FF4081</color>
     
      <!-- Female Theme -->

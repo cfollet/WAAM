@@ -2,10 +2,12 @@ package fr.uppa.waam.views;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,9 +28,9 @@ import android.widget.ListView;
 import fr.uppa.waam.R;
 import fr.uppa.waam.listeners.MyLocationListener;
 import fr.uppa.waam.listeners.SendMessageListener;
-import fr.uppa.waam.models.GeoLocation;
 import fr.uppa.waam.models.Message;
 import fr.uppa.waam.presenters.WallAdapter;
+import fr.uppa.waam.util.ThemeHandler;
 
 public class WallActivity extends Activity {
 
@@ -36,6 +38,7 @@ public class WallActivity extends Activity {
 	LocationManager locationManager;
 	WallAdapter wallAdapter;
 	ListView list;
+	ThemeHandler themeHandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,17 +50,42 @@ public class WallActivity extends Activity {
 		List<Message> messages = new ArrayList<Message>();
 		this.wallAdapter = new WallAdapter(this, R.layout.message, messages);
 		this.list.setAdapter(this.wallAdapter);
+		this.list.setEmptyView(findViewById(R.id.empty));
 
 		// Location management
 		this.locationListener = new MyLocationListener(this, this.wallAdapter);
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, this.locationListener);
 
-		ActionBar actionBar = this.getActionBar();
-		actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(this.getString(R.color.primary_indigo_500))));
-
+		// Default preferences initialization
 		this.init();
+		
+
+		// UI initialization using preferences
+		this.themeHandler = new ThemeHandler(this);
+		this.themeHandler.init();
+		
 	}
+	
+	
+	
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		this.themeHandler.init();
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		Map<String,?> keys = preferences.getAll();
+
+		for(Map.Entry<String,?> entry : keys.entrySet()){
+		            Log.d("test",entry.getKey() + ": " + 
+		                                   entry.getValue().toString());            
+		 }
+	}
+
+
+	
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -78,7 +106,7 @@ public class WallActivity extends Activity {
 			alertDialogBuilder.setView(messageDialogView);
 			alertDialogBuilder.setCancelable(true);
 			alertDialogBuilder.setPositiveButton("Envoyer", new SendMessageListener(input, this));
-			alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			alertDialogBuilder.setNegativeButton("Anuler", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					dialog.cancel();
 				}

@@ -35,15 +35,17 @@ public class WallAdapter extends ArrayAdapter<Message> {
 			TextView distance = (TextView) convertView.findViewById(R.id.distance);
 
 			if (message.getGender() == Message.MALE_CODE) {
-				genderIcon.setImageResource(R.drawable.male);
+				genderIcon.setImageResource(R.drawable.gender_male);
 			} else {
-				genderIcon.setImageResource(R.drawable.female);
+				genderIcon.setImageResource(R.drawable.gender_female);
 			}
 
 			content.setText(message.getContent());
 			timestamp.setText(Message.UI_DATE_FORMATTER.format(message.getTimestamp()));
 			distance.setText(String.valueOf(message.getLocation().getDistance()));
 
+		}else{
+			
 		}
 
 		return convertView;

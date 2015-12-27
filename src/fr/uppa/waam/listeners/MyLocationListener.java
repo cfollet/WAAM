@@ -37,7 +37,7 @@ public class MyLocationListener implements LocationListener {
 		double latitude = location.getLatitude();
 		double longitude = location.getLongitude();
 
-		int radius = preferences.getInt(GeoLocation.JSON_TAG_RADIUS, GeoLocation.DEFAULT_RADIUS);
+		int radius = preferences.getInt("radius_preference", GeoLocation.DEFAULT_RADIUS);
 		radius = 1000000;
 		GeoLocation myLocation = new GeoLocation(latitude, longitude, 0, radius);
 		new RetrieveMessagesTask(this.activity).execute(myLocation);

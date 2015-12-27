@@ -1,5 +1,7 @@
 package fr.uppa.waam.util;
 
+import java.util.Map;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -17,18 +19,26 @@ public class ThemeHandler {
 		this.activity = activity;
 	}
 
-	private void init() {
+	public void init() {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
-		int gender = preferences.getInt(Message.POST_TAG_GENDER, -1);
+
+		String gender = preferences.getString("gender_preference", "");
 
 		ActionBar actionBar = this.activity.getActionBar();
-		
-		if (gender == Message.MALE_CODE) {
-			actionBar.setBackgroundDrawable(new ColorDrawable(R.color.primary_indigo_500));
-		}
-		if (gender == Message.FEMALE_CODE) {
+		Log.i("test", gender);
 
+		if (Integer.parseInt(gender) == Message.MALE_CODE) {
+
+			actionBar.setBackgroundDrawable(
+					new ColorDrawable(this.activity.getResources().getColor(R.color.primary_indigo_500)));
+			actionBar.setDisplayShowTitleEnabled(false);
+			actionBar.setDisplayShowTitleEnabled(true);
+		}
+		if (Integer.parseInt(gender) == Message.FEMALE_CODE) {
+			actionBar.setBackgroundDrawable(new ColorDrawable(this.activity.getResources().getColor(R.color.primary_pink_500)));
+			actionBar.setDisplayShowTitleEnabled(false);
+			actionBar.setDisplayShowTitleEnabled(true);
 		}
 	}
-	
+
 }

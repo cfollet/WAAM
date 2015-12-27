@@ -18,7 +18,7 @@
 
         <SeekBarPreference
             android:defaultValue="250"
-            android:key="@string/radius_preference_key"
+            android:key="radius_preference"
             android:max="500"
             android:progress="50"
             android:summary="10"
