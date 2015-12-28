@@ -10,8 +10,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.util.Log;
-import fr.uppa.waam.models.GeoLocation;;
+import android.util.Log;;
 
 public class Message {
 	public final static SimpleDateFormat JSON_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");

@@ -3,8 +3,8 @@ package fr.uppa.waam.listeners;
 import java.util.Date;
 
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.EditText;
@@ -44,7 +44,6 @@ public class SendMessageListener implements OnClickListener {
 			// If the message length is not < 3
 			if (this.input.getText().toString().length() >= 3) {
 				GeoLocation location = new GeoLocation(latitude, longitude, 0, 0);
-//				Log.i("test", "Send message from :" + location.toString());
 				Message message = new Message(this.input.getText().toString(), location, new Date(), Integer.parseInt(gender));
 				new SendMessageTask(this.activity).execute(message);
 			} else {

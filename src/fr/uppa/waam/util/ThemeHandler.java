@@ -1,14 +1,11 @@
 package fr.uppa.waam.util;
 
-import java.util.Map;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Window;
 import fr.uppa.waam.R;
 import fr.uppa.waam.models.Message;
 

@@ -56,23 +56,27 @@ public final class R {
         public static final int male=0x7f020007;
     }
     public static final class id {
-        public static final int action_settings=0x7f0b000b;
-        public static final int content=0x7f0b0005;
-        public static final int distance=0x7f0b0007;
+        public static final int action_settings=0x7f0b000f;
+        public static final int content=0x7f0b0009;
+        public static final int current_value=0x7f0b0004;
+        public static final int distance=0x7f0b000b;
         public static final int empty=0x7f0b0003;
-        public static final int genderIcon=0x7f0b0004;
-        public static final int imageButton1=0x7f0b0001;
+        public static final int genderIcon=0x7f0b0008;
         public static final int input=0x7f0b0000;
-        public static final int menu_message=0x7f0b0008;
-        public static final int menu_preference=0x7f0b000a;
-        public static final int menu_refresh=0x7f0b0009;
+        public static final int inputCount=0x7f0b0001;
+        public static final int max_value=0x7f0b0007;
+        public static final int menu_message=0x7f0b000c;
+        public static final int menu_preference=0x7f0b000e;
+        public static final int menu_refresh=0x7f0b000d;
         public static final int messages=0x7f0b0002;
-        public static final int timestamp=0x7f0b0006;
+        public static final int min_value=0x7f0b0006;
+        public static final int seek_bar=0x7f0b0005;
+        public static final int timestamp=0x7f0b000a;
     }
     public static final class layout {
         public static final int activity_message=0x7f030000;
-        public static final int activity_preference=0x7f030001;
-        public static final int activity_wall=0x7f030002;
+        public static final int activity_wall=0x7f030001;
+        public static final int dialog_seek_bar=0x7f030002;
         public static final int message=0x7f030003;
     }
     public static final class menu {
@@ -144,9 +148,10 @@ public final class R {
         public static final int AppTheme=0x7f090001;
     }
     public static final class xml {
-        public static final int pref_data_sync=0x7f040000;
-        public static final int pref_general=0x7f040001;
-        public static final int pref_headers=0x7f040002;
-        public static final int pref_notification=0x7f040003;
+        public static final int activity_preference=0x7f040000;
+        public static final int pref_data_sync=0x7f040001;
+        public static final int pref_general=0x7f040002;
+        public static final int pref_headers=0x7f040003;
+        public static final int pref_notification=0x7f040004;
     }
 }

@@ -11,18 +11,21 @@
             android:id="@+id/input"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight="0.75"
+            android:layout_weight="0.5"
             android:background="@android:color/transparent"
             android:ems="10"
+            android:maxLength="500"
             android:hint="Envoyer un message" />
 
-        <ImageButton
-            android:id="@+id/imageButton1"
+        <TextView
+            android:id="@+id/inputCount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.15"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_send_white_24dp" />
+            android:alpha=".35"
+            android:gravity="right"
+            android:text="500"
+            android:background="@android:color/transparent" />
     </LinearLayout>
 
 </LinearLayout>

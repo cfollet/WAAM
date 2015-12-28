@@ -2,41 +2,36 @@ package fr.uppa.waam.views;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import fr.uppa.waam.R;
+import fr.uppa.waam.listeners.CancelMessageListener;
+import fr.uppa.waam.listeners.MessageTextChangedListener;
 import fr.uppa.waam.listeners.MyLocationListener;
 import fr.uppa.waam.listeners.SendMessageListener;
+import fr.uppa.waam.models.GeoLocation;
 import fr.uppa.waam.models.Message;
+import fr.uppa.waam.models.MessagesManager;
 import fr.uppa.waam.presenters.WallAdapter;
 import fr.uppa.waam.util.ThemeHandler;
 
 public class WallActivity extends Activity {
 
-	MyLocationListener locationListener;
-	LocationManager locationManager;
+	MessagesManager manager;
 	WallAdapter wallAdapter;
 	ListView list;
 	ThemeHandler themeHandler;
@@ -46,7 +41,9 @@ public class WallActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wall);
-
+		
+		this.manager = new MessagesManager(this);
+		
 		// Attach the adapter with the list view
 		this.list = (ListView) findViewById(R.id.messages);
 		List<Message> messages = new ArrayList<Message>();
@@ -55,9 +52,9 @@ public class WallActivity extends Activity {
 		this.list.setEmptyView(findViewById(R.id.empty));
 
 		// Location management
-		this.locationListener = new MyLocationListener(this, this.wallAdapter);
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, this.locationListener);
+		MyLocationListener locationListener = new MyLocationListener(this, this.wallAdapter);
+		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
 
 		// Default preferences initialization
 		this.init();
@@ -72,12 +69,19 @@ public class WallActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		this.themeHandler.init();
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		Map<String, ?> keys = preferences.getAll();
+		this.manager.getMessages();
+	}
+	
 
-		for (Map.Entry<String, ?> entry : keys.entrySet()) {
-			Log.d("test", entry.getKey() + ": " + entry.getValue().toString());
-		}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		// Remove the location at the end of the application
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.remove(GeoLocation.JSON_TAG_LATITUDE);
+		editor.remove(GeoLocation.JSON_TAG_LONGITUDE);
+		editor.commit();
 	}
 
 	@Override
@@ -93,11 +97,13 @@ public class WallActivity extends Activity {
 	}
 	
 	public void setMenuItemActiveState(boolean state){
-		int alpha = (state)?255:130; // Alpha transparency
-		menu.findItem(R.id.menu_message).setEnabled(state);
-		menu.findItem(R.id.menu_message).getIcon().setAlpha(alpha);
-		menu.findItem(R.id.menu_refresh).setEnabled(state);
-		menu.findItem(R.id.menu_refresh).getIcon().setAlpha(alpha);
+		if (this.menu != null) {
+			int alpha = (state)?255:130; // Alpha transparency
+			menu.findItem(R.id.menu_message).setEnabled(state);
+			menu.findItem(R.id.menu_message).getIcon().setAlpha(alpha);
+			menu.findItem(R.id.menu_refresh).setEnabled(state);
+			menu.findItem(R.id.menu_refresh).getIcon().setAlpha(alpha);
+		}
 	}
 
 	@Override
@@ -107,16 +113,14 @@ public class WallActivity extends Activity {
 			LayoutInflater layoutInflater = LayoutInflater.from(this);
 			View messageDialogView = layoutInflater.inflate(R.layout.activity_message, null);
 			EditText input = (EditText) messageDialogView.findViewById(R.id.input);
+			TextView inputCount = (TextView) messageDialogView.findViewById(R.id.inputCount);
+			input.addTextChangedListener(new MessageTextChangedListener(inputCount));
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
 			alertDialogBuilder.setView(messageDialogView);
 			alertDialogBuilder.setCancelable(true);
 			alertDialogBuilder.setPositiveButton("Envoyer", new SendMessageListener(input, this));
-			alertDialogBuilder.setNegativeButton("Anuler", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
+			alertDialogBuilder.setNegativeButton("Anuler", new CancelMessageListener());
 
 			// create an alert dialog
 			AlertDialog alertD = alertDialogBuilder.create();
@@ -130,6 +134,7 @@ public class WallActivity extends Activity {
 			this.startActivity(intent);
 			break;
 		case R.id.menu_refresh:
+			this.manager.getMessages();
 			break;
 		default:
 			break;
@@ -148,7 +153,7 @@ public class WallActivity extends Activity {
 		boolean isFirstTime = preferences.getBoolean("isFirstTime", true);
 		if (isFirstTime) {
 			// Initialize the default value from the xml preferences file
-			PreferenceManager.setDefaultValues(this, R.layout.activity_preference, false);
+			PreferenceManager.setDefaultValues(this, R.xml.activity_preference, false);
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putBoolean("isFirstTime", false);
 			editor.commit();

@@ -7,9 +7,9 @@
     <ImageView
         android:id="@+id/genderIcon"
         android:layout_width="0dp"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="0.25"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:src="@android:drawable/ic_delete" />
 
     <LinearLayout

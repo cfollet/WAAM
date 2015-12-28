@@ -12,17 +12,14 @@ import android.widget.TextView;
 import fr.uppa.waam.R;
 import fr.uppa.waam.models.Message;
 import fr.uppa.waam.util.DataHandler;
-import fr.uppa.waam.views.WallActivity;
 
 public class WallAdapter extends ArrayAdapter<Message> {
 	/** The message list need to be sorted by seniority **/
 	private List<Message> messages;
-	private Context context;
 
 	public WallAdapter(Context context, int textViewResourceId, List<Message> messages) {
 		super(context, textViewResourceId, messages);
 		this.messages = messages;
-		this.context = context;
 	}
 
 	@Override
