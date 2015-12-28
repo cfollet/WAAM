@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import fr.uppa.waam.R;
 import fr.uppa.waam.listeners.MyLocationListener;
@@ -39,6 +40,7 @@ public class WallActivity extends Activity {
 	WallAdapter wallAdapter;
 	ListView list;
 	ThemeHandler themeHandler;
+	Menu menu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,39 +61,43 @@ public class WallActivity extends Activity {
 
 		// Default preferences initialization
 		this.init();
-		
 
 		// UI initialization using preferences
 		this.themeHandler = new ThemeHandler(this);
 		this.themeHandler.init();
-		
+
 	}
-	
-	
-	
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		this.themeHandler.init();
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		Map<String,?> keys = preferences.getAll();
+		Map<String, ?> keys = preferences.getAll();
 
-		for(Map.Entry<String,?> entry : keys.entrySet()){
-		            Log.d("test",entry.getKey() + ": " + 
-		                                   entry.getValue().toString());            
-		 }
+		for (Map.Entry<String, ?> entry : keys.entrySet()) {
+			Log.d("test", entry.getKey() + ": " + entry.getValue().toString());
+		}
 	}
-
-
-	
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.menu, menu);
-		return true;
+		
+		this.menu = menu;
+		
+		// Disable action button (they will be activated when the phone is located)
+		setMenuItemActiveState(false);
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	public void setMenuItemActiveState(boolean state){
+		int alpha = (state)?255:130; // Alpha transparency
+		menu.findItem(R.id.menu_message).setEnabled(state);
+		menu.findItem(R.id.menu_message).getIcon().setAlpha(alpha);
+		menu.findItem(R.id.menu_refresh).setEnabled(state);
+		menu.findItem(R.id.menu_refresh).getIcon().setAlpha(alpha);
 	}
 
 	@Override
@@ -132,7 +138,6 @@ public class WallActivity extends Activity {
 	}
 
 	public void populate(List<Message> messages) {
-		Log.i("test", String.valueOf(messages.size()));
 		this.wallAdapter.clear();
 		this.wallAdapter.addAll(messages);
 		this.wallAdapter.notifyDataSetChanged();

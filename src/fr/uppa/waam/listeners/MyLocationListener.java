@@ -6,6 +6,10 @@ import android.location.LocationListener;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.widget.EditText;
+import android.widget.TextView;
+import fr.uppa.waam.R;
 import fr.uppa.waam.models.GeoLocation;
 import fr.uppa.waam.presenters.WallAdapter;
 import fr.uppa.waam.tasks.RetrieveMessagesTask;
@@ -24,7 +28,8 @@ public class MyLocationListener implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
-		/** Save the location and radius into shared preferences **/
+		this.activity.setMenuItemActiveState(true);
+		/** Save the location into shared preferences **/
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putFloat(GeoLocation.JSON_TAG_LATITUDE, (float) location.getLatitude());
@@ -53,12 +58,15 @@ public class MyLocationListener implements LocationListener {
 			editor.remove(GeoLocation.JSON_TAG_LONGITUDE);
 			editor.commit();
 		}
+		if (status == LocationProvider.AVAILABLE){
+			this.activity.setMenuItemActiveState(true);
+		}
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-
+		TextView text = (TextView) this.activity.findViewById(R.id.empty);
+		text.setText("En attente le localisation...");
 	}
 
 	@Override
@@ -69,6 +77,11 @@ public class MyLocationListener implements LocationListener {
 		editor.remove(GeoLocation.JSON_TAG_LATITUDE);
 		editor.remove(GeoLocation.JSON_TAG_LONGITUDE);
 		editor.commit();
+
+		TextView text = (TextView) this.activity.findViewById(R.id.empty);
+		text.setText(":(, Le GPS est désactivé");
+		
+		this.activity.setMenuItemActiveState(false);
 	}
 
 }

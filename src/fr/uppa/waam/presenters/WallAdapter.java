@@ -11,14 +11,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import fr.uppa.waam.R;
 import fr.uppa.waam.models.Message;
+import fr.uppa.waam.util.DataHandler;
+import fr.uppa.waam.views.WallActivity;
 
 public class WallAdapter extends ArrayAdapter<Message> {
 	/** The message list need to be sorted by seniority **/
 	private List<Message> messages;
+	private Context context;
 
 	public WallAdapter(Context context, int textViewResourceId, List<Message> messages) {
 		super(context, textViewResourceId, messages);
 		this.messages = messages;
+		this.context = context;
 	}
 
 	@Override
@@ -26,7 +30,7 @@ public class WallAdapter extends ArrayAdapter<Message> {
 		if (convertView == null) {
 			convertView = LayoutInflater.from(getContext()).inflate(R.layout.message, parent, false);
 		}
-		if (messages.size()>0) {
+		if (messages.size() > 0) {
 			Message message = messages.get(position);
 
 			ImageView genderIcon = (ImageView) convertView.findViewById(R.id.genderIcon);
@@ -41,11 +45,8 @@ public class WallAdapter extends ArrayAdapter<Message> {
 			}
 
 			content.setText(message.getContent());
-			timestamp.setText(Message.UI_DATE_FORMATTER.format(message.getTimestamp()));
-			distance.setText(String.valueOf(message.getLocation().getDistance()));
-
-		}else{
-			
+			timestamp.setText(DataHandler.formatDate(message.getTimestamp()));
+			distance.setText(DataHandler.formatDistance(message.getLocation().getDistance()));
 		}
 
 		return convertView;

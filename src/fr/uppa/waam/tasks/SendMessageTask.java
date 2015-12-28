@@ -2,6 +2,7 @@ package fr.uppa.waam.tasks;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.widget.Toast;
 import fr.uppa.waam.models.Message;
 import fr.uppa.waam.util.ServiceHandler;
 import fr.uppa.waam.views.WallActivity;
@@ -35,6 +36,7 @@ public class SendMessageTask extends AsyncTask<Message, Void, Void> {
 	@Override
 	protected void onPostExecute(Void result) {
 		this.progress.dismiss();
+		Toast.makeText(this.activity.getApplicationContext(), "Le message à été envoyé", Toast.LENGTH_LONG).show();
 	}
 	
 }
