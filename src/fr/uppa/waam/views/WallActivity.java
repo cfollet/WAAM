@@ -15,13 +15,17 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 import fr.uppa.waam.R;
 import fr.uppa.waam.listeners.CancelMessageListener;
 import fr.uppa.waam.listeners.MessageTextChangedListener;
 import fr.uppa.waam.listeners.MyLocationListener;
+import fr.uppa.waam.listeners.OnNextButtonClickListener;
+import fr.uppa.waam.listeners.OnPreviousButtonClickListener;
 import fr.uppa.waam.listeners.SendMessageListener;
 import fr.uppa.waam.models.GeoLocation;
 import fr.uppa.waam.models.Message;
@@ -31,23 +35,44 @@ import fr.uppa.waam.util.ThemeHandler;
 
 public class WallActivity extends Activity {
 
-	MessagesManager manager;
-	WallAdapter wallAdapter;
-	ListView list;
-	ThemeHandler themeHandler;
-	Menu menu;
+	private List<Message> messages;
+	private MessagesManager messagesManager;
+	private WallAdapter wallAdapter;
+	private ListView list;
+	private ThemeHandler themeHandler;
+	private Menu menu;
+
+	/** Pagination **/
+	private TextView pagesInfo;
+	private Button btnPrevious;
+	private Button btnNext;
+	private int currentPage = 0;
+	private int pageCount;
+	public final int ITEM_PER_PAGE = 15;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wall);
-		
-		this.manager = new MessagesManager(this);
-		
-		// Attach the adapter with the list view
-		this.list = (ListView) findViewById(R.id.messages);
+
+		this.messagesManager = new MessagesManager(this);
+
+		// Pagination management
+		this.pagesInfo = (TextView) findViewById(R.id.pagesInformation);
+		this.btnPrevious = (Button) findViewById(R.id.previous);
+		this.btnPrevious.setOnClickListener(new OnPreviousButtonClickListener(this));
+		this.btnNext = (Button) findViewById(R.id.next);
+		this.btnNext.setOnClickListener(new OnNextButtonClickListener(this));
+
+		// Attach the adapter with both list view (paginated and non paginated)
 		List<Message> messages = new ArrayList<Message>();
 		this.wallAdapter = new WallAdapter(this, R.layout.message, messages);
+
+		this.list = (ListView) findViewById(R.id.messagesPaginated);
+		this.list.setAdapter(this.wallAdapter);
+		this.list.setEmptyView(findViewById(R.id.empty));
+
+		this.list = (ListView) findViewById(R.id.messages);
 		this.list.setAdapter(this.wallAdapter);
 		this.list.setEmptyView(findViewById(R.id.empty));
 
@@ -57,11 +82,14 @@ public class WallActivity extends Activity {
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
 
 		// Default preferences initialization
-		this.init();
+		this.initPreferences();
 
 		// UI initialization using preferences
 		this.themeHandler = new ThemeHandler(this);
 		this.themeHandler.init();
+
+		// Handle pagination if needed
+		this.setLayoutPagination();
 
 	}
 
@@ -69,9 +97,14 @@ public class WallActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		this.themeHandler.init();
-		this.manager.getMessages();
+		this.messagesManager.getMessages();
+		this.setLayoutPagination();
+		// Update the list in case the user change some preferences for example.
+		if (this.messages != null) {
+			this.populate(this.messages);
+		}
+
 	}
-	
 
 	@Override
 	protected void onDestroy() {
@@ -88,17 +121,18 @@ public class WallActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.menu, menu);
-		
+
 		this.menu = menu;
-		
-		// Disable action button (they will be activated when the phone is located)
+
+		// Disable action button (they will be activated when the phone is
+		// located)
 		setMenuItemActiveState(false);
 		return super.onCreateOptionsMenu(menu);
 	}
-	
-	public void setMenuItemActiveState(boolean state){
+
+	public void setMenuItemActiveState(boolean state) {
 		if (this.menu != null) {
-			int alpha = (state)?255:130; // Alpha transparency
+			int alpha = (state) ? 255 : 130; // Alpha transparency
 			menu.findItem(R.id.menu_message).setEnabled(state);
 			menu.findItem(R.id.menu_message).getIcon().setAlpha(alpha);
 			menu.findItem(R.id.menu_refresh).setEnabled(state);
@@ -134,7 +168,7 @@ public class WallActivity extends Activity {
 			this.startActivity(intent);
 			break;
 		case R.id.menu_refresh:
-			this.manager.getMessages();
+			this.messagesManager.getMessages();
 			break;
 		default:
 			break;
@@ -143,12 +177,54 @@ public class WallActivity extends Activity {
 	}
 
 	public void populate(List<Message> messages) {
+		this.messages = messages;
 		this.wallAdapter.clear();
+		if (needPagination()) {
+			// define the page number
+			int val = messages.size() % this.ITEM_PER_PAGE;
+			val = val == 0 ? 0 : 1;
+			this.pageCount = messages.size() / this.ITEM_PER_PAGE + val;
+			messages = loadPageMessages(messages);
+			CheckButtonsEnable();
+		}
 		this.wallAdapter.addAll(messages);
 		this.wallAdapter.notifyDataSetChanged();
 	}
 
-	private void init() {
+	public List<Message> loadPageMessages(List<Message> fullMessagesList) {
+
+		List<Message> result = new ArrayList<Message>();
+		this.pagesInfo.setText("Page " + (this.currentPage + 1) + " of " + pageCount);
+
+		int start = this.currentPage * this.ITEM_PER_PAGE;
+		for (int i = start; i < (start) + this.ITEM_PER_PAGE; i++) {
+			if (i < fullMessagesList.size()) {
+				result.add(fullMessagesList.get(i));
+			} else {
+				break;
+			}
+		}
+		return result;
+	}
+
+	private boolean needPagination() {
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		return preferences.getBoolean("pagination_preference", false);
+	}
+
+	private void setLayoutPagination() {
+		if (this.needPagination()) {
+			View v = findViewById(R.id.paginatedView);
+			ViewFlipper vf = (ViewFlipper) findViewById(R.id.viewFlipper);
+			vf.setDisplayedChild(vf.indexOfChild(v));
+		} else {
+			View v = findViewById(R.id.nonPaginatedView);
+			ViewFlipper vf = (ViewFlipper) findViewById(R.id.viewFlipper);
+			vf.setDisplayedChild(vf.indexOfChild(v));
+		}
+	}
+
+	private void initPreferences() {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		boolean isFirstTime = preferences.getBoolean("isFirstTime", true);
 		if (isFirstTime) {
@@ -157,6 +233,29 @@ public class WallActivity extends Activity {
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putBoolean("isFirstTime", false);
 			editor.commit();
+		}
+	}
+
+	public void incrementPage() {
+		this.currentPage++;
+	}
+
+	public void decrementPage() {
+		this.currentPage--;
+	}
+
+	public List<Message> getMessages() {
+		return messages;
+	}
+
+	private void CheckButtonsEnable() {
+		if (this.currentPage + 1 == pageCount) {
+			this.btnNext.setEnabled(false);
+		} else if (this.currentPage == 0) {
+			this.btnPrevious.setEnabled(false);
+		} else {
+			this.btnPrevious.setEnabled(true);
+			this.btnNext.setEnabled(true);
 		}
 	}
 

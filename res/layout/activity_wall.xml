@@ -1,21 +1,71 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/viewFlipper"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="fr.uppa.waam.views.WallActivity" >
+    android:layout_height="match_parent" >
 
-    <ListView
-        android:id="@+id/messages"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/empty"
-        android:gravity="center"
-        android:alpha=".54"
-        android:textSize="@dimen/title"
+    <RelativeLayout
+        android:id="@+id/nonPaginatedView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Aucun message à afficher" />
+        tools:context="fr.uppa.waam.views.WallActivity" >
 
-</RelativeLayout>
+        <ListView
+            android:id="@+id/messages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha=".54"
+            android:gravity="center"
+            android:text="Aucun message à afficher"
+            android:textSize="@dimen/title" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/paginatedView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/pagesInformation"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/darker_gray"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <ListView
+            android:id="@+id/messagesPaginated"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/previous"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Prev" />
+
+            <Button
+                android:id="@+id/next"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Next" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ViewFlipper>
