@@ -43,7 +43,6 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
 
     public SeekBarPreference(Context context, AttributeSet attrs) {
 	super(context, attrs);
-
 	// Read parameters from attributes
 	mMinValue = attrs.getAttributeIntValue(PREFERENCE_NS, ATTR_MIN_VALUE, DEFAULT_MIN_VALUE);
 	mMaxValue = attrs.getAttributeIntValue(PREFERENCE_NS, ATTR_MAX_VALUE, DEFAULT_MAX_VALUE);
@@ -120,18 +119,12 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
     }
     
     public void onProgressChanged(SeekBar seek, int value, boolean fromTouch) {
-	// Update current value
-	mCurrentValue = value + mMinValue;
-	mCurrentValue = ((int)Math.round(value/STEP ))*STEP;
-	if(value < 50){
-		mCurrentValue = 50;
-	}
-	if(value > 450){
-		mCurrentValue = 500;
-	}
-	seek.setProgress(mCurrentValue);
-	// Update label with current value
-	mValueText.setText(Integer.toString(mCurrentValue));
+	/// Update current value
+    	mCurrentValue = value + mMinValue;
+    	mCurrentValue = mCurrentValue / STEP;
+    	mCurrentValue = mCurrentValue * STEP;
+    	// Update label with current value
+    	mValueText.setText(Integer.toString(mCurrentValue));
     }
 
     public void onStartTrackingTouch(SeekBar seek) {
