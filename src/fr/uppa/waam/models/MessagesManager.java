@@ -20,7 +20,7 @@ public class MessagesManager {
 		double latitude = preferences.getFloat(GeoLocation.JSON_TAG_LATITUDE, 0);
 		double longitude = preferences.getFloat(GeoLocation.JSON_TAG_LONGITUDE, 0);
 		int radius = preferences.getInt("radius_preference", GeoLocation.DEFAULT_RADIUS);
-		radius = 1000000;
+		//radius = 1000000;
 		Log.i("test", "Location : " + String.valueOf(latitude)+", "+String.valueOf(longitude));
 		
 		// If the shared preferences can be retrieved and are correct

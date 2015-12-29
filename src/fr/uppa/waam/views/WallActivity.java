@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -60,9 +61,9 @@ public class WallActivity extends Activity {
 		// Pagination management
 		this.pagesInfo = (TextView) findViewById(R.id.pagesInformation);
 		this.btnPrevious = (Button) findViewById(R.id.previous);
-		this.btnPrevious.setOnClickListener(new OnPreviousButtonClickListener(this));
+		this.btnPrevious.setOnClickListener(new OnPreviousButtonClickListener(this, this.btnPrevious));
 		this.btnNext = (Button) findViewById(R.id.next);
-		this.btnNext.setOnClickListener(new OnNextButtonClickListener(this));
+		this.btnNext.setOnClickListener(new OnNextButtonClickListener(this, this.btnNext));
 
 		// Attach the adapter with both list view (paginated and non paginated)
 		List<Message> messages = new ArrayList<Message>();
@@ -185,7 +186,9 @@ public class WallActivity extends Activity {
 			val = val == 0 ? 0 : 1;
 			this.pageCount = messages.size() / this.ITEM_PER_PAGE + val;
 			messages = loadPageMessages(messages);
-			CheckButtonsEnable();
+			this.btnNext.setEnabled(this.isNextButtonEnabled());
+			this.btnPrevious.setEnabled(this.isPreviousButtonEnabled());
+			Log.i("test", "Current page : " + this.currentPage);
 		}
 		this.wallAdapter.addAll(messages);
 		this.wallAdapter.notifyDataSetChanged();
@@ -194,7 +197,7 @@ public class WallActivity extends Activity {
 	public List<Message> loadPageMessages(List<Message> fullMessagesList) {
 
 		List<Message> result = new ArrayList<Message>();
-		this.pagesInfo.setText("Page " + (this.currentPage + 1) + " of " + pageCount);
+		this.pagesInfo.setText("Page " + (this.currentPage + 1) + "/" + pageCount);
 
 		int start = this.currentPage * this.ITEM_PER_PAGE;
 		for (int i = start; i < (start) + this.ITEM_PER_PAGE; i++) {
@@ -248,15 +251,25 @@ public class WallActivity extends Activity {
 		return messages;
 	}
 
-	private void CheckButtonsEnable() {
-		if (this.currentPage + 1 == pageCount) {
-			this.btnNext.setEnabled(false);
-		} else if (this.currentPage == 0) {
-			this.btnPrevious.setEnabled(false);
-		} else {
-			this.btnPrevious.setEnabled(true);
-			this.btnNext.setEnabled(true);
+	public boolean isNextButtonEnabled() {
+		boolean result = true;
+
+		if (this.currentPage +1 == this.pageCount || this.pageCount == 0) {
+			result = false;
 		}
+		Log.i("test", "Next : " + String.valueOf(result));
+		return result;
 	}
+	
+	public boolean isPreviousButtonEnabled() {
+		boolean result = true;
+
+		if (this.currentPage == 0) {
+			result = false;
+		}
+		Log.i("test", "Previous : " + String.valueOf(result));
+		return result;
+	}
+
 
 }

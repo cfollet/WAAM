@@ -67,7 +67,11 @@ public class RetrieveMessagesTask extends AsyncTask<GeoLocation, Integer, List<M
 	@Override
 	protected void onPostExecute(List<Message> result) {
 		if (this.progress.isShowing()) {
-			this.progress.dismiss();
+			try {
+				this.progress.dismiss();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 		}
 		this.activity.populate(result);
 	}
