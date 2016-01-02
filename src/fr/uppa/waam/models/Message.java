@@ -13,34 +13,25 @@ import org.json.JSONObject;
 import android.util.Log;;
 
 public class Message {
-	public final static SimpleDateFormat JSON_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-	public final static SimpleDateFormat UI_DATE_FORMATTER = new SimpleDateFormat("dd/MM/yyyy - hh:m");
-	
-	public final static String JSON_TAG_CONTENT = "msg";
-	public final static String JSON_TAG_LOCATION = "geo";
-	public final static String JSON_TAG_TIMESTAMP = "time";
-	public final static String JSON_TAG_GENDER = "gender";
-	
-	public final static String POST_TAG_CONTENT = "my_message";
-	public final static String POST_TAG_GENDER = "my_gender";
-	
-	public final static String PREFERENCE_TAG_GENDER = "my_gender";
-
-	public static final Integer MALE_CODE = 1;
 	public static final Integer FEMALE_CODE = 0;
 
+	public final static SimpleDateFormat JSON_DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	public final static String JSON_TAG_CONTENT = "msg";
+	public final static String JSON_TAG_GENDER = "gender";
+	public final static String JSON_TAG_LOCATION = "geo";
+
+	public final static String JSON_TAG_TIMESTAMP = "time";
+	public static final Integer MALE_CODE = 1;
+
+	public final static String POST_TAG_CONTENT = "my_message";
+
+	public final static String POST_TAG_GENDER = "my_gender";
+	public final static String PREFERENCE_TAG_GENDER = "my_gender";
+
 	private String content;
+	private Integer gender;
 	private GeoLocation location;
 	private Date timestamp;
-	private Integer gender;
-
-	public Message(String content, GeoLocation location, Date timestamp, Integer gender) {
-		super();
-		this.content = content;
-		this.location = location;
-		this.timestamp = timestamp;
-		this.gender = gender;
-	}
 
 	public Message(JSONObject jsonMessage) {
 		try {
@@ -51,7 +42,7 @@ public class Message {
 			this.timestamp = JSON_DATE_FORMATTER.parse(jsonMessage.getString(Message.JSON_TAG_TIMESTAMP));
 
 			// get GeoLocation Informations
-			int distance = ((Number)jsonMessage.getDouble(GeoLocation.JSON_TAG_DISTANCE)).intValue();
+			int distance = ((Number) jsonMessage.getDouble(GeoLocation.JSON_TAG_DISTANCE)).intValue();
 			JSONArray location = jsonMessage.getJSONArray(Message.JSON_TAG_LOCATION);
 			double latitude = location.getDouble(0);
 			double longitude = location.getDouble(1);
@@ -60,6 +51,30 @@ public class Message {
 		} catch (Exception e) {
 			Log.i("test", e.getCause().toString());
 		}
+	}
+
+	public Message(String content, GeoLocation location, Date timestamp, Integer gender) {
+		super();
+		this.content = content;
+		this.location = location;
+		this.timestamp = timestamp;
+		this.gender = gender;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public Integer getGender() {
+		return gender;
+	}
+
+	public GeoLocation getLocation() {
+		return location;
+	}
+
+	public Date getTimestamp() {
+		return timestamp;
 	}
 
 	public List<NameValuePair> toNameValuePairs() {
@@ -71,24 +86,6 @@ public class Message {
 		result.add(new BasicNameValuePair(Message.POST_TAG_GENDER, String.valueOf(this.getGender())));
 
 		return result;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public GeoLocation getLocation() {
-		return location;
-	}
-
-	public Date getTimestamp() {
-		return timestamp;
-	}
-	
-	
-
-	public Integer getGender() {
-		return gender;
 	}
 
 }

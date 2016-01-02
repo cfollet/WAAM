@@ -22,8 +22,8 @@ import fr.uppa.waam.views.WallActivity;
 public class MyLocationListener implements LocationListener {
 
 	WallActivity activity;
-	WallAdapter wallAdapter;
 	MessagesManager manager;
+	WallAdapter wallAdapter;
 
 	public MyLocationListener(WallActivity activity, WallAdapter wallAdapter) {
 		super();
@@ -39,6 +39,30 @@ public class MyLocationListener implements LocationListener {
 		/** retrieve message from database **/
 		this.manager.getMessages();
 
+	}
+
+	/**
+	 * When the GPS is disabled, we unset the location from shared preferences
+	 * and disable the action bar buttons
+	 **/
+	@Override
+	public void onProviderDisabled(String provider) {
+
+		this.unsetLocation();
+		TextView text = (TextView) this.activity.findViewById(R.id.empty);
+		text.setText("Le GPS est désactivé :(");
+		text = (TextView) this.activity.findViewById(R.id.emptyPaginated);
+		text.setText("Le GPS est désactivé :(");
+
+		this.activity.setMenuItemActiveState(false);
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		TextView text = (TextView) this.activity.findViewById(R.id.empty);
+		text.setText("En attente le localisation...");
+		text = (TextView) this.activity.findViewById(R.id.emptyPaginated);
+		text.setText("En attente le localisation...");
 	}
 
 	@Override
@@ -59,43 +83,20 @@ public class MyLocationListener implements LocationListener {
 		}
 	}
 
-	@Override
-	public void onProviderEnabled(String provider) {
-		TextView text = (TextView) this.activity.findViewById(R.id.empty);
-		text.setText("En attente le localisation...");
-		text = (TextView) this.activity.findViewById(R.id.emptyPaginated);
-		text.setText("En attente le localisation...");
-	}
-	
-	/**
-	 * When the GPS is disabled, we unset the location from shared preferences and disable the action bar buttons
-	 **/
-	@Override
-	public void onProviderDisabled(String provider) {
-
-		this.unsetLocation();
-		TextView text = (TextView) this.activity.findViewById(R.id.empty);
-		text.setText("Le GPS est désactivé :(");
-		text = (TextView) this.activity.findViewById(R.id.emptyPaginated);
-		text.setText("Le GPS est désactivé :(");
-
-		this.activity.setMenuItemActiveState(false);
-	}
-	
-	private void unsetLocation(){
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.remove(GeoLocation.PREFERENCE_TAG_LATITUDE);
-		editor.remove(GeoLocation.PREFERENCE_TAG_LONGITUDE);
-		editor.commit();
-	}
-	
-	private void setLocation(Location location){
+	private void setLocation(Location location) {
 		/** Save the location into shared preferences **/
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putFloat(GeoLocation.PREFERENCE_TAG_LATITUDE, (float) location.getLatitude());
 		editor.putFloat(GeoLocation.PREFERENCE_TAG_LONGITUDE, (float) location.getLongitude());
+		editor.commit();
+	}
+
+	private void unsetLocation() {
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.remove(GeoLocation.PREFERENCE_TAG_LATITUDE);
+		editor.remove(GeoLocation.PREFERENCE_TAG_LONGITUDE);
 		editor.commit();
 	}
 

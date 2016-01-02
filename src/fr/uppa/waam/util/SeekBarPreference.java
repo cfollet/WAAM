@@ -13,28 +13,28 @@ import fr.uppa.waam.R;
 
 public final class SeekBarPreference extends DialogPreference implements OnSeekBarChangeListener {
 
-	// Namespaces to read attributes
-	private static final String PREFERENCE_NS = "http://schemas.android.com/apk/res/fr.uppa.waam.util.seekbarpreference";
 	private static final String ANDROID_NS = "http://schemas.android.com/apk/res/android";
-
 	// Attribute names
 	private static final String ATTR_DEFAULT_VALUE = "defaultValue";
-	private static final String ATTR_MIN_VALUE = "minValue";
-	private static final String ATTR_MAX_VALUE = "maxValue";
-	private static final int STEP = 50;
 
+	private static final String ATTR_MAX_VALUE = "maxValue";
+	private static final String ATTR_MIN_VALUE = "minValue";
 	// Default values for defaults
 	private static final int DEFAULT_CURRENT_VALUE = 250;
-	private static final int DEFAULT_MIN_VALUE = 50;
 	private static final int DEFAULT_MAX_VALUE = 500;
 
-	// Real defaults
-	private final int mDefaultValue;
-	private final int mMaxValue;
-	private final int mMinValue;
+	private static final int DEFAULT_MIN_VALUE = 50;
+	// Namespaces to read attributes
+	private static final String PREFERENCE_NS = "http://schemas.android.com/apk/res/fr.uppa.waam.util.seekbarpreference";
+	private static final int STEP = 50;
 
 	// Current value
 	private int mCurrentValue;
+	// Real defaults
+	private final int mDefaultValue;
+	private final int mMaxValue;
+
+	private final int mMinValue;
 
 	// View elements
 	private SeekBar mSeekBar;
@@ -49,20 +49,11 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
 	}
 
 	@Override
-	protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-		if (restorePersistedValue) {
-			// Restore existing state
-			mCurrentValue = this.getPersistedInt(mDefaultValue);
-		} else {
-			// Set default state from the XML attribute
-			mCurrentValue = (Integer) defaultValue;
-			persistInt(mCurrentValue);
-		}
-	}
-
-	@Override
-	protected Object onGetDefaultValue(TypedArray a, int index) {
-		return a.getInteger(index, mDefaultValue);
+	public CharSequence getSummary() {
+		// Format summary string with current value
+		String summary = super.getSummary().toString();
+		int value = getPersistedInt(mDefaultValue);
+		return String.format(summary, value);
 	}
 
 	@Override
@@ -110,13 +101,11 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
 	}
 
 	@Override
-	public CharSequence getSummary() {
-		// Format summary string with current value
-		String summary = super.getSummary().toString();
-		int value = getPersistedInt(mDefaultValue);
-		return String.format(summary, value);
+	protected Object onGetDefaultValue(TypedArray a, int index) {
+		return a.getInteger(index, mDefaultValue);
 	}
 
+	@Override
 	public void onProgressChanged(SeekBar seek, int value, boolean fromTouch) {
 		// Update current value
 		mCurrentValue = value + mMinValue;
@@ -126,10 +115,24 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
 		mValueText.setText(Integer.toString(mCurrentValue));
 	}
 
+	@Override
+	protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
+		if (restorePersistedValue) {
+			// Restore existing state
+			mCurrentValue = this.getPersistedInt(mDefaultValue);
+		} else {
+			// Set default state from the XML attribute
+			mCurrentValue = (Integer) defaultValue;
+			persistInt(mCurrentValue);
+		}
+	}
+
+	@Override
 	public void onStartTrackingTouch(SeekBar seek) {
 		// Not used
 	}
 
+	@Override
 	public void onStopTrackingTouch(SeekBar seek) {
 		// Not used
 	}

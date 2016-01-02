@@ -12,13 +12,11 @@ public class MyPreferenceActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.activity_preference);
 	}
-	
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		Toast.makeText(this.getApplicationContext(), "Les préférences ont été sauvegardées.", Toast.LENGTH_LONG).show();
 	}
-	
-	
+
 }

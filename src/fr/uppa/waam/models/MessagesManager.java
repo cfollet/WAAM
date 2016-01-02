@@ -7,10 +7,8 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.webkit.GeolocationPermissions;
 import android.widget.EditText;
 import android.widget.Toast;
-import fr.uppa.waam.R;
 import fr.uppa.waam.tasks.RetrieveMessagesTask;
 import fr.uppa.waam.tasks.SendMessageTask;
 import fr.uppa.waam.views.WallActivity;
@@ -24,7 +22,7 @@ public class MessagesManager {
 		super();
 		this.activity = activity;
 	}
-	
+
 	public MessagesManager(WallActivity activity, EditText input) {
 		super();
 		this.activity = activity;
@@ -41,6 +39,31 @@ public class MessagesManager {
 			Toast.makeText(this.activity.getApplicationContext(), "Réseau indisponible.", Toast.LENGTH_LONG).show();
 
 		}
+	}
+
+	/**
+	 * To be valid, a location must have a longitude, latitude, radius !=0
+	 * 
+	 * @return
+	 */
+	private GeoLocation getMyLocation() {
+		GeoLocation myLocation = null;
+
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
+		double latitude = preferences.getFloat(GeoLocation.PREFERENCE_TAG_LATITUDE, GeoLocation.DEFAULT_LATITUDE);
+		double longitude = preferences.getFloat(GeoLocation.PREFERENCE_TAG_LONGITUDE, GeoLocation.DEFAULT_LONGITUDE);
+		int radius = preferences.getInt(GeoLocation.PREFERENCE_TAG_RADIUS, GeoLocation.DEFAULT_RADIUS);
+
+		if (latitude + longitude != 0 && radius != 0) {
+			myLocation = new GeoLocation(latitude, longitude, GeoLocation.DEFAULT_DISTANCE, radius);
+		}
+
+		return myLocation;
+	}
+
+	private boolean isNetworkAvaliable() {
+		return ((ConnectivityManager) this.activity.getApplicationContext()
+				.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
 	}
 
 	public void sendMessage() {
@@ -70,29 +93,5 @@ public class MessagesManager {
 			Toast.makeText(this.activity.getApplicationContext(), "Réseau indisponible.", Toast.LENGTH_LONG).show();
 
 		}
-	}
-
-	/**
-	 * To be valid, a location must have a longitude, latitude, radius !=0 
-	 * @return
-	 */
-	private GeoLocation getMyLocation(){
-		GeoLocation myLocation = null;
-		
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
-		double latitude = preferences.getFloat(GeoLocation.PREFERENCE_TAG_LATITUDE, GeoLocation.DEFAULT_LATITUDE);
-		double longitude = preferences.getFloat(GeoLocation.PREFERENCE_TAG_LONGITUDE, GeoLocation.DEFAULT_LONGITUDE);
-		int radius = preferences.getInt(GeoLocation.PREFERENCE_TAG_RADIUS, GeoLocation.DEFAULT_RADIUS);
-		
-		if(latitude+longitude != 0 && radius != 0 ){
-			myLocation = new GeoLocation(latitude, longitude, GeoLocation.DEFAULT_DISTANCE, radius);
-		}
-		
-		return myLocation;
-	}
-	
-	private boolean isNetworkAvaliable() {
-		return ((ConnectivityManager) this.activity.getApplicationContext()
-				.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
 	}
 }

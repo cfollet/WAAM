@@ -35,7 +35,8 @@ public class ThemeHandler {
 			pageInformation.setBackgroundColor(this.activity.getResources().getColor(R.color.primary_indigo_700));
 		}
 		if (Integer.parseInt(gender) == Message.FEMALE_CODE) {
-			actionBar.setBackgroundDrawable(new ColorDrawable(this.activity.getResources().getColor(R.color.primary_pink_500)));
+			actionBar.setBackgroundDrawable(
+					new ColorDrawable(this.activity.getResources().getColor(R.color.primary_pink_500)));
 			actionBar.setDisplayShowTitleEnabled(false);
 			actionBar.setDisplayShowTitleEnabled(true);
 			pageInformation.setBackgroundColor(this.activity.getResources().getColor(R.color.primary_pink_700));

@@ -5,14 +5,9 @@ import java.util.Date;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class DataHandler {
-	public static String formatDistance(float meters) {
-		if (meters < 1000) {
-			return ((int) meters) + "m";
-		} else if (meters < 10000) {
-			return formatDec(meters / 1000f, 1) + "km";
-		} else {
-			return ((int) (meters / 1000f)) + "km";
-		}
+	public static String formatDate(Date d) {
+		PrettyTime p = new PrettyTime();
+		return p.format(d);
 	}
 
 	static String formatDec(float val, int dec) {
@@ -23,8 +18,13 @@ public class DataHandler {
 		return front + "." + back;
 	}
 
-	public static String formatDate(Date d) {
-		PrettyTime p = new PrettyTime();
-		return p.format(d);
+	public static String formatDistance(float meters) {
+		if (meters < 1000) {
+			return ((int) meters) + "m";
+		} else if (meters < 10000) {
+			return formatDec(meters / 1000f, 1) + "km";
+		} else {
+			return ((int) (meters / 1000f)) + "km";
+		}
 	}
 }

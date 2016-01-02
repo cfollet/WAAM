@@ -6,7 +6,7 @@ import android.widget.Button;
 import fr.uppa.waam.views.WallActivity;
 
 public class OnNextButtonClickListener implements OnClickListener {
-	
+
 	WallActivity activity;
 	Button nextButton;
 
@@ -17,11 +17,10 @@ public class OnNextButtonClickListener implements OnClickListener {
 		this.nextButton.setEnabled(this.activity.isNextButtonEnabled());
 	}
 
-
 	@Override
 	public void onClick(View v) {
-        this.activity.incrementPage();
-        this.activity.populate(this.activity.getMessages());
+		this.activity.incrementPage();
+		this.activity.populate(this.activity.getMessages());
 	}
 
 }

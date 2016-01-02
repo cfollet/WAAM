@@ -6,7 +6,7 @@ import android.widget.Button;
 import fr.uppa.waam.views.WallActivity;
 
 public class OnPreviousButtonClickListener implements OnClickListener {
-	
+
 	WallActivity activity;
 	Button previousButton;
 
@@ -19,7 +19,7 @@ public class OnPreviousButtonClickListener implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		this.activity.decrementPage();
-        this.activity.populate(this.activity.getMessages());
+		this.activity.populate(this.activity.getMessages());
 	}
 
 }

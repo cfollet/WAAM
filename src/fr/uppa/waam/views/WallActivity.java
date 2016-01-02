@@ -35,20 +35,83 @@ import fr.uppa.waam.util.ThemeHandler;
 
 public class WallActivity extends Activity {
 
+	private ListView list;
+	private Menu menu;
+
+	private ThemeHandler themeHandler;
+	private WallAdapter wallAdapter;
 	private List<Message> messages;
 	private MessagesManager messagesManager;
-	private WallAdapter wallAdapter;
-	private ListView list;
-	private ThemeHandler themeHandler;
-	private Menu menu;
 
 	/** Pagination **/
 	private TextView pagesInfo;
-	private Button btnPrevious;
 	private Button btnNext;
+	private Button btnPrevious;
 	private int currentPage = 0;
-	private int pageCount;
 	public final int ITEM_PER_PAGE = 15;
+	private int pageCount;
+
+	public void decrementPage() {
+		this.currentPage--;
+	}
+
+	public List<Message> getMessages() {
+		return messages;
+	}
+
+	public void incrementPage() {
+		this.currentPage++;
+	}
+
+	private void initPreferences() {
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean isFirstTime = preferences.getBoolean("isFirstTime", true);
+		if (isFirstTime) {
+			// Initialize the default value from the xml preferences file
+			PreferenceManager.setDefaultValues(this, R.xml.activity_preference, false);
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putBoolean("isFirstTime", false);
+			editor.commit();
+		}
+	}
+
+	public boolean isNextButtonEnabled() {
+		boolean result = true;
+
+		if (this.currentPage + 1 == this.pageCount || this.pageCount == 0) {
+			result = false;
+		}
+		return result;
+	}
+
+	public boolean isPreviousButtonEnabled() {
+		boolean result = true;
+
+		if (this.currentPage == 0 || this.pageCount == 0) {
+			result = false;
+		}
+		return result;
+	}
+
+	public List<Message> loadPageMessages(List<Message> fullMessagesList) {
+		List<Message> result = new ArrayList<Message>();
+		this.pagesInfo.setText("Page " + (this.currentPage + 1) + "/" + pageCount);
+
+		int start = this.currentPage * this.ITEM_PER_PAGE;
+		for (int i = start; i < (start) + this.ITEM_PER_PAGE; i++) {
+			if (i < fullMessagesList.size()) {
+				result.add(fullMessagesList.get(i));
+			} else {
+				break;
+			}
+		}
+		return result;
+	}
+
+	private boolean needPagination() {
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		return preferences.getBoolean("pagination_preference", false);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,30 +157,6 @@ public class WallActivity extends Activity {
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-		this.themeHandler.init();
-		this.messagesManager.getMessages();
-		this.setLayoutPagination();
-		// Update the list in case the user change some preferences for example.
-		if (this.messages != null) {
-			this.populate(this.messages);
-		}
-
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		// Remove the location at the end of the application
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.remove(GeoLocation.JSON_TAG_LATITUDE);
-		editor.remove(GeoLocation.JSON_TAG_LONGITUDE);
-		editor.commit();
-	}
-
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.menu, menu);
@@ -130,14 +169,15 @@ public class WallActivity extends Activity {
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	public void setMenuItemActiveState(boolean state) {
-		if (this.menu != null) {
-			int alpha = (state) ? 255 : 130; // Alpha transparency
-			menu.findItem(R.id.menu_message).setEnabled(state);
-			menu.findItem(R.id.menu_message).getIcon().setAlpha(alpha);
-			menu.findItem(R.id.menu_refresh).setEnabled(state);
-			menu.findItem(R.id.menu_refresh).getIcon().setAlpha(alpha);
-		}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		// Remove the location at the end of the application
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.remove(GeoLocation.JSON_TAG_LATITUDE);
+		editor.remove(GeoLocation.JSON_TAG_LONGITUDE);
+		editor.commit();
 	}
 
 	@Override
@@ -156,7 +196,6 @@ public class WallActivity extends Activity {
 			alertDialogBuilder.setPositiveButton("Envoyer", new OnSendMessageClickListener(input, this));
 			alertDialogBuilder.setNegativeButton("Anuler", new OnCancelMessageClickListener());
 
-			// create an alert dialog
 			AlertDialog alertD = alertDialogBuilder.create();
 
 			alertD.show();
@@ -176,6 +215,19 @@ public class WallActivity extends Activity {
 		return true;
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		this.themeHandler.init();
+		this.messagesManager.getMessages();
+		this.setLayoutPagination();
+		// Update the list in case the user change some preferences for example.
+		if (this.messages != null) {
+			this.populate(this.messages);
+		}
+
+	}
+
 	public void populate(List<Message> messages) {
 		this.messages = messages;
 		this.wallAdapter.clear();
@@ -185,37 +237,17 @@ public class WallActivity extends Activity {
 			int val = messages.size() % this.ITEM_PER_PAGE;
 			val = val == 0 ? 0 : 1;
 			this.pageCount = messages.size() / this.ITEM_PER_PAGE + val;
-			
+
 			// Load messages from current page.
 			messages = loadPageMessages(messages);
-			
+
 			// Updates the controls buttons
 			this.btnNext.setEnabled(this.isNextButtonEnabled());
 			this.btnPrevious.setEnabled(this.isPreviousButtonEnabled());
 		}
-		
+
 		this.wallAdapter.addAll(messages);
 		this.wallAdapter.notifyDataSetChanged();
-	}
-
-	public List<Message> loadPageMessages(List<Message> fullMessagesList) {
-		List<Message> result = new ArrayList<Message>();
-		this.pagesInfo.setText("Page " + (this.currentPage + 1) + "/" + pageCount);
-
-		int start = this.currentPage * this.ITEM_PER_PAGE;
-		for (int i = start; i < (start) + this.ITEM_PER_PAGE; i++) {
-			if (i < fullMessagesList.size()) {
-				result.add(fullMessagesList.get(i));
-			} else {
-				break;
-			}
-		}
-		return result;
-	}
-
-	private boolean needPagination() {
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		return preferences.getBoolean("pagination_preference", false);
 	}
 
 	/**
@@ -233,46 +265,14 @@ public class WallActivity extends Activity {
 		}
 	}
 
-	private void initPreferences() {
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		boolean isFirstTime = preferences.getBoolean("isFirstTime", true);
-		if (isFirstTime) {
-			// Initialize the default value from the xml preferences file
-			PreferenceManager.setDefaultValues(this, R.xml.activity_preference, false);
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.putBoolean("isFirstTime", false);
-			editor.commit();
+	public void setMenuItemActiveState(boolean state) {
+		if (this.menu != null) {
+			int alpha = (state) ? 255 : 130; // Alpha transparency
+			menu.findItem(R.id.menu_message).setEnabled(state);
+			menu.findItem(R.id.menu_message).getIcon().setAlpha(alpha);
+			menu.findItem(R.id.menu_refresh).setEnabled(state);
+			menu.findItem(R.id.menu_refresh).getIcon().setAlpha(alpha);
 		}
-	}
-
-	public void incrementPage() {
-		this.currentPage++;
-	}
-
-	public void decrementPage() {
-		this.currentPage--;
-	}
-
-	public List<Message> getMessages() {
-		return messages;
-	}
-
-	public boolean isNextButtonEnabled() {
-		boolean result = true;
-
-		if (this.currentPage + 1 == this.pageCount || this.pageCount == 0) {
-			result = false;
-		}
-		return result;
-	}
-
-	public boolean isPreviousButtonEnabled() {
-		boolean result = true;
-
-		if (this.currentPage == 0  || this.pageCount == 0) {
-			result = false;
-		}
-		return result;
 	}
 
 }

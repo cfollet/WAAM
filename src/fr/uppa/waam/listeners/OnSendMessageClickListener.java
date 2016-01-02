@@ -7,18 +7,15 @@ import fr.uppa.waam.models.MessagesManager;
 import fr.uppa.waam.views.WallActivity;
 
 public class OnSendMessageClickListener implements OnClickListener {
-	
-	EditText input;
+
 	WallActivity activity;
-	
+	EditText input;
 
 	public OnSendMessageClickListener(EditText input, WallActivity activity) {
 		super();
 		this.input = input;
 		this.activity = activity;
 	}
-
-
 
 	@Override
 	public void onClick(DialogInterface dialog, int which) {

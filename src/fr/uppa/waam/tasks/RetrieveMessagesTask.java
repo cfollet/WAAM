@@ -31,11 +31,6 @@ public class RetrieveMessagesTask extends AsyncTask<GeoLocation, Integer, List<M
 	}
 
 	@Override
-	protected void onPreExecute() {
-		this.progress.show();
-	}
-
-	@Override
 	protected List<Message> doInBackground(GeoLocation... params) {
 		List<Message> messages = new ArrayList<Message>();
 		try {
@@ -57,13 +52,6 @@ public class RetrieveMessagesTask extends AsyncTask<GeoLocation, Integer, List<M
 		return messages;
 	}
 
-	
-
-	@Override
-	protected void onProgressUpdate(Integer... values) {
-		this.progress.setProgress(values[0]);
-	}
-
 	@Override
 	protected void onPostExecute(List<Message> result) {
 		if (this.progress.isShowing()) {
@@ -74,6 +62,16 @@ public class RetrieveMessagesTask extends AsyncTask<GeoLocation, Integer, List<M
 			}
 		}
 		this.activity.populate(result);
+	}
+
+	@Override
+	protected void onPreExecute() {
+		this.progress.show();
+	}
+
+	@Override
+	protected void onProgressUpdate(Integer... values) {
+		this.progress.setProgress(values[0]);
 	}
 
 }

@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             android:alpha=".54"
             android:gravity="center"
-            android:text="Aucun message à afficher"
+            android:text="@string/text_empty_view"
             android:textSize="@dimen/title" />
     </RelativeLayout>
 
@@ -38,7 +38,7 @@
             android:background="#333333"
             android:gravity="center"
             android:padding="10dp"
-            android:text="Page */*"
+            android:text="@string/text_empty_pages_info"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
@@ -47,33 +47,37 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
+
         <TextView
             android:id="@+id/emptyPaginated"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha=".54"
             android:gravity="center"
-            android:text="Aucun message à afficher"
+            android:text="@string/text_empty_view"
             android:textSize="@dimen/title" />
 
         <LinearLayout
+            style="?android:attr/buttonBarStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
             <Button
+                style="?android:attr/buttonBarButtonStyle"
                 android:id="@+id/previous"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Prev" />
+                android:text="@string/text_button_previous" />
 
             <Button
                 android:id="@+id/next"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Next" />
+                android:text="@string/text_button_next" />
         </LinearLayout>
     </LinearLayout>
 

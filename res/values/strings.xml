@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+<!--  -->
     <string name="app_name">WAAM</string>
     <string name="action_settings">Préférences</string>
-    <string name="title_activity_preference">PreferenceActivity</string>
-    <string name="title_activity_message">MessageActivity</string>
-    <string name="title_activity_my_preference">MyPreferenceActivity</string>
+    <string name="title_activity_preference">Préférences</string>
+    <string name="title_activity_message">Message</string>
+    <string name="title_activity_my_preference">Préférences</string>
+    <!--  -->
+    <string name="text_empty_view">Aucun message à afficher</string>
+    <string name="text_button_next">Suivant</string>
+    <string name="text_button_previous">Précédent</string>
+    <string name="text_empty_pages_info">Page -/-</string>
+    <!--  -->
+     <string name="action_bar_settings">Préférences</string>
+      <string name="action_bar_refresh">Rafraîchir</string>
+       <string name="action_bar_new_message">Nouveau Message</string>
+    
 
     <!-- Preference's labels -->
     <string name="pagination_preference_title">Pagination</string>
