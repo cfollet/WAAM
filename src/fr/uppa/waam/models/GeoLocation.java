@@ -7,15 +7,25 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 public class GeoLocation {
+	/** Used to parse JSON response from server **/
 	public final static String JSON_TAG_LATITUDE = "my_latitude";
 	public final static String JSON_TAG_LONGITUDE = "my_longitude";
 	public final static String JSON_TAG_RADIUS = "my_radius";
-	public final static int DEFAULT_RADIUS = 250;
 	public final static String JSON_TAG_DISTANCE = "meters";
-	
-	public final static String GET_TAG_LATITUDE = JSON_TAG_LATITUDE;
-	public final static String GET_TAG_LONGITUDE = JSON_TAG_LONGITUDE;
-	public final static String GET_TAG_RADIUS = JSON_TAG_RADIUS;
+
+	/** Used to store/retrieve SharedPreferences **/
+	public final static String PREFERENCE_TAG_LATITUDE = "my_latitude";
+	public final static float DEFAULT_LATITUDE = 0.f;
+	public final static String PREFERENCE_TAG_LONGITUDE = "my_longitude";
+	public final static float DEFAULT_LONGITUDE = 0.f;
+	public final static String PREFERENCE_TAG_RADIUS = "my_radius";
+	public final static int DEFAULT_RADIUS = 250;
+	public final static int DEFAULT_DISTANCE = 0;
+
+	/** Used to retrieve data from the server using get method **/
+	public final static String GET_TAG_LATITUDE = "my_latitude";
+	public final static String GET_TAG_LONGITUDE = "my_longitude";
+	public final static String GET_TAG_RADIUS = "my_radius";
 
 	private double latitude;
 	private double longitude;
@@ -54,11 +64,12 @@ public class GeoLocation {
 
 		return result;
 	}
-	
+
 	@Override
 	public String toString() {
 		String result;
-		result = "GeoLocation("+this.getLatitude()+", "+this.getLongitude()+", "+this.getDistance()+", "+this.getRadius()+")";
+		result = "GeoLocation(" + this.getLatitude() + ", " + this.getLongitude() + ", " + this.getDistance() + ", "
+				+ this.getRadius() + ")";
 		return result;
 	}
 

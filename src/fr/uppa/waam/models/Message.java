@@ -23,6 +23,8 @@ public class Message {
 	
 	public final static String POST_TAG_CONTENT = "my_message";
 	public final static String POST_TAG_GENDER = "my_gender";
+	
+	public final static String PREFERENCE_TAG_GENDER = "my_gender";
 
 	public static final Integer MALE_CODE = 1;
 	public static final Integer FEMALE_CODE = 0;

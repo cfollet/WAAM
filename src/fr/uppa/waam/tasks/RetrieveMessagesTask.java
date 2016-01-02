@@ -70,7 +70,7 @@ public class RetrieveMessagesTask extends AsyncTask<GeoLocation, Integer, List<M
 			try {
 				this.progress.dismiss();
 			} catch (Exception e) {
-				// TODO: handle exception
+				Log.e("test", e.getMessage());
 			}
 		}
 		this.activity.populate(result);

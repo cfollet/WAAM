@@ -13,6 +13,12 @@ import fr.uppa.waam.models.MessagesManager;
 import fr.uppa.waam.presenters.WallAdapter;
 import fr.uppa.waam.views.WallActivity;
 
+/**
+ * Used to detect when the phone location changes.
+ * 
+ * @author cfollet
+ *
+ */
 public class MyLocationListener implements LocationListener {
 
 	WallActivity activity;
@@ -29,12 +35,7 @@ public class MyLocationListener implements LocationListener {
 	@Override
 	public void onLocationChanged(Location location) {
 		this.activity.setMenuItemActiveState(true);
-		/** Save the location into shared preferences **/
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.putFloat(GeoLocation.JSON_TAG_LATITUDE, (float) location.getLatitude());
-		editor.putFloat(GeoLocation.JSON_TAG_LONGITUDE, (float) location.getLongitude());
-		editor.commit();
+		this.setLocation(location);
 		/** retrieve message from database **/
 		this.manager.getMessages();
 
@@ -43,16 +44,16 @@ public class MyLocationListener implements LocationListener {
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		/**
-		 * if the position isn't fixed we unset the longitude and latitude from
-		 * shared preferences.
+		 * if the position becomes unfixed, we unset the longitude and latitude
+		 * from shared preferences and we disable the action bar buttons
 		 **/
 		if (status != LocationProvider.AVAILABLE) {
-			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.remove(GeoLocation.JSON_TAG_LATITUDE);
-			editor.remove(GeoLocation.JSON_TAG_LONGITUDE);
-			editor.commit();
+			this.unsetLocation();
+			this.activity.setMenuItemActiveState(false);
 		}
+		/**
+		 * If the position becomes fixed, we activate the action bar buttons
+		 */
 		if (status == LocationProvider.AVAILABLE) {
 			this.activity.setMenuItemActiveState(true);
 		}
@@ -62,24 +63,40 @@ public class MyLocationListener implements LocationListener {
 	public void onProviderEnabled(String provider) {
 		TextView text = (TextView) this.activity.findViewById(R.id.empty);
 		text.setText("En attente le localisation...");
+		text = (TextView) this.activity.findViewById(R.id.emptyPaginated);
+		text.setText("En attente le localisation...");
 	}
-
+	
+	/**
+	 * When the GPS is disabled, we unset the location from shared preferences and disable the action bar buttons
+	 **/
 	@Override
 	public void onProviderDisabled(String provider) {
-		/**
-		 * if the position isn't fixed we unset the longitude and latitude from
-		 * shared preferences.
-		 **/
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.remove(GeoLocation.JSON_TAG_LATITUDE);
-		editor.remove(GeoLocation.JSON_TAG_LONGITUDE);
-		editor.commit();
 
+		this.unsetLocation();
 		TextView text = (TextView) this.activity.findViewById(R.id.empty);
-		text.setText(":(, Le GPS est désactivé");
+		text.setText("Le GPS est désactivé :(");
+		text = (TextView) this.activity.findViewById(R.id.emptyPaginated);
+		text.setText("Le GPS est désactivé :(");
 
 		this.activity.setMenuItemActiveState(false);
+	}
+	
+	private void unsetLocation(){
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.remove(GeoLocation.PREFERENCE_TAG_LATITUDE);
+		editor.remove(GeoLocation.PREFERENCE_TAG_LONGITUDE);
+		editor.commit();
+	}
+	
+	private void setLocation(Location location){
+		/** Save the location into shared preferences **/
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putFloat(GeoLocation.PREFERENCE_TAG_LATITUDE, (float) location.getLatitude());
+		editor.putFloat(GeoLocation.PREFERENCE_TAG_LONGITUDE, (float) location.getLongitude());
+		editor.commit();
 	}
 
 }

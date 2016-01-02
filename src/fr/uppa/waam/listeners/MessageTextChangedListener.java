@@ -4,8 +4,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.TextView;
 
+/**
+ * This class is used to manage the text message and display the characters left allowed.
+ * @author cfollet
+ */
 public class MessageTextChangedListener implements TextWatcher {
 	
+	private static int MESSAGE_LIMIT = 500;
 	private TextView inputCount;
 
 	public MessageTextChangedListener(TextView inputCount) {
@@ -26,7 +31,7 @@ public class MessageTextChangedListener implements TextWatcher {
 
 	@Override
 	public void afterTextChanged(Editable s) {
-		 this.inputCount.setText(500 - s.toString().length() + "/500");
+		 this.inputCount.setText(MESSAGE_LIMIT - s.toString().length() + "/"+MESSAGE_LIMIT);
 	}
 
 }

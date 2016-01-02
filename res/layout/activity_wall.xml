@@ -47,6 +47,14 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
+        <TextView
+            android:id="@+id/emptyPaginated"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha=".54"
+            android:gravity="center"
+            android:text="Aucun message à afficher"
+            android:textSize="@dimen/title" />
 
         <LinearLayout
             android:layout_width="fill_parent"

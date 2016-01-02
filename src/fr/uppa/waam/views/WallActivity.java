@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,12 +21,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 import fr.uppa.waam.R;
-import fr.uppa.waam.listeners.CancelMessageListener;
 import fr.uppa.waam.listeners.MessageTextChangedListener;
 import fr.uppa.waam.listeners.MyLocationListener;
+import fr.uppa.waam.listeners.OnCancelMessageClickListener;
 import fr.uppa.waam.listeners.OnNextButtonClickListener;
 import fr.uppa.waam.listeners.OnPreviousButtonClickListener;
-import fr.uppa.waam.listeners.SendMessageListener;
+import fr.uppa.waam.listeners.OnSendMessageClickListener;
 import fr.uppa.waam.models.GeoLocation;
 import fr.uppa.waam.models.Message;
 import fr.uppa.waam.models.MessagesManager;
@@ -71,7 +70,7 @@ public class WallActivity extends Activity {
 
 		this.list = (ListView) findViewById(R.id.messagesPaginated);
 		this.list.setAdapter(this.wallAdapter);
-		this.list.setEmptyView(findViewById(R.id.empty));
+		this.list.setEmptyView(findViewById(R.id.emptyPaginated));
 
 		this.list = (ListView) findViewById(R.id.messages);
 		this.list.setAdapter(this.wallAdapter);
@@ -154,8 +153,8 @@ public class WallActivity extends Activity {
 
 			alertDialogBuilder.setView(messageDialogView);
 			alertDialogBuilder.setCancelable(true);
-			alertDialogBuilder.setPositiveButton("Envoyer", new SendMessageListener(input, this));
-			alertDialogBuilder.setNegativeButton("Anuler", new CancelMessageListener());
+			alertDialogBuilder.setPositiveButton("Envoyer", new OnSendMessageClickListener(input, this));
+			alertDialogBuilder.setNegativeButton("Anuler", new OnCancelMessageClickListener());
 
 			// create an alert dialog
 			AlertDialog alertD = alertDialogBuilder.create();
@@ -180,22 +179,26 @@ public class WallActivity extends Activity {
 	public void populate(List<Message> messages) {
 		this.messages = messages;
 		this.wallAdapter.clear();
-		if (needPagination()) {
+
+		if (this.needPagination() && messages.size() > 0) {
 			// define the page number
 			int val = messages.size() % this.ITEM_PER_PAGE;
 			val = val == 0 ? 0 : 1;
 			this.pageCount = messages.size() / this.ITEM_PER_PAGE + val;
+			
+			// Load messages from current page.
 			messages = loadPageMessages(messages);
+			
+			// Updates the controls buttons
 			this.btnNext.setEnabled(this.isNextButtonEnabled());
 			this.btnPrevious.setEnabled(this.isPreviousButtonEnabled());
-			Log.i("test", "Current page : " + this.currentPage);
 		}
+		
 		this.wallAdapter.addAll(messages);
 		this.wallAdapter.notifyDataSetChanged();
 	}
 
 	public List<Message> loadPageMessages(List<Message> fullMessagesList) {
-
 		List<Message> result = new ArrayList<Message>();
 		this.pagesInfo.setText("Page " + (this.currentPage + 1) + "/" + pageCount);
 
@@ -215,6 +218,9 @@ public class WallActivity extends Activity {
 		return preferences.getBoolean("pagination_preference", false);
 	}
 
+	/**
+	 * Switch between the Paginated view and the nonPaginated view.
+	 */
 	private void setLayoutPagination() {
 		if (this.needPagination()) {
 			View v = findViewById(R.id.paginatedView);
@@ -254,22 +260,19 @@ public class WallActivity extends Activity {
 	public boolean isNextButtonEnabled() {
 		boolean result = true;
 
-		if (this.currentPage +1 == this.pageCount || this.pageCount == 0) {
+		if (this.currentPage + 1 == this.pageCount || this.pageCount == 0) {
 			result = false;
 		}
-		Log.i("test", "Next : " + String.valueOf(result));
 		return result;
 	}
-	
+
 	public boolean isPreviousButtonEnabled() {
 		boolean result = true;
 
-		if (this.currentPage == 0) {
+		if (this.currentPage == 0  || this.pageCount == 0) {
 			result = false;
 		}
-		Log.i("test", "Previous : " + String.valueOf(result));
 		return result;
 	}
-
 
 }

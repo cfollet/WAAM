@@ -9,8 +9,6 @@ public class OnNextButtonClickListener implements OnClickListener {
 	
 	WallActivity activity;
 	Button nextButton;
-	
-	
 
 	public OnNextButtonClickListener(WallActivity activity, Button nextButton) {
 		super();
@@ -18,7 +16,6 @@ public class OnNextButtonClickListener implements OnClickListener {
 		this.nextButton = nextButton;
 		this.nextButton.setEnabled(this.activity.isNextButtonEnabled());
 	}
-
 
 
 	@Override

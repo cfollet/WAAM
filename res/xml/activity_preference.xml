@@ -3,7 +3,7 @@
     xmlns:example="fr.uppa.waam.util.seekbarpreference" >
 
     <CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="pagination_preference"
         android:summary="@string/pagination_preference_summary"
         android:title="@string/pagination_preference_title" />
@@ -12,18 +12,18 @@
         android:defaultValue="0"
         android:entries="@array/gender_list_key"
         android:entryValues="@array/gender_list_value"
-        android:key="gender_preference"
+        android:key="my_gender"
         android:summary="%s"
         android:title="@string/gender_preference_title" />
 
     <fr.uppa.waam.util.SeekBarPreference
-        android:key="radius_preference"
-	    android:title="Rayon des messages"
-	    android:dialogTitle="Rayon"
-	    android:summary="%1$d"
-	    android:persistent="true"
-	    android:defaultValue="250"
-	    example:minValue="50"
-	    example:maxValue="500" />
-    
+        android:defaultValue="250"
+        android:dialogTitle="Rayon"
+        android:key="my_radius"
+        android:persistent="true"
+        android:summary="%1$d"
+        android:title="Rayon des messages"
+        example:maxValue="500"
+        example:minValue="50" />
+
 </PreferenceScreen>
