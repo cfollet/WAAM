@@ -24,6 +24,7 @@ import fr.uppa.waam.R;
 import fr.uppa.waam.listeners.MessageTextChangedListener;
 import fr.uppa.waam.listeners.MyLocationListener;
 import fr.uppa.waam.listeners.OnCancelMessageClickListener;
+import fr.uppa.waam.listeners.OnListItemClick;
 import fr.uppa.waam.listeners.OnNextButtonClickListener;
 import fr.uppa.waam.listeners.OnPreviousButtonClickListener;
 import fr.uppa.waam.listeners.OnSendMessageClickListener;
@@ -38,6 +39,9 @@ public class WallActivity extends Activity {
 	private ListView list;
 	private Menu menu;
 
+	private LocationManager locationManager;
+	private MyLocationListener locationListener;
+	
 	private ThemeHandler themeHandler;
 	private WallAdapter wallAdapter;
 	private List<Message> messages;
@@ -50,6 +54,113 @@ public class WallActivity extends Activity {
 	private int currentPage = 0;
 	public final int ITEM_PER_PAGE = 15;
 	private int pageCount;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_wall);
+
+		this.messagesManager = new MessagesManager(this);
+
+		// Pagination management
+		this.pagesInfo = (TextView) findViewById(R.id.pagesInformation);
+		this.btnPrevious = (Button) findViewById(R.id.previous);
+		this.btnPrevious.setOnClickListener(new OnPreviousButtonClickListener(this, this.btnPrevious));
+		this.btnNext = (Button) findViewById(R.id.next);
+		this.btnNext.setOnClickListener(new OnNextButtonClickListener(this, this.btnNext));
+
+		// Attach the adapter with both list view (paginated and non paginated)
+		List<Message> messages = new ArrayList<Message>();
+		this.wallAdapter = new WallAdapter(this, R.layout.message, messages);
+
+		this.list = (ListView) findViewById(R.id.messagesPaginated);
+		this.list.setAdapter(this.wallAdapter);
+		this.list.setEmptyView(findViewById(R.id.emptyPaginated));
+		this.list.setOnItemClickListener(new OnListItemClick(this));
+
+		this.list = (ListView) findViewById(R.id.messages);
+		this.list.setAdapter(this.wallAdapter);
+		this.list.setEmptyView(findViewById(R.id.empty));
+		this.list.setOnItemClickListener(new OnListItemClick(this));
+
+		// Location management
+		this.locationListener = new MyLocationListener(this, this.wallAdapter);
+		this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, this.locationListener);
+
+		// Default preferences initialization
+		this.initPreferences();
+
+		// UI initialization using preferences
+		this.themeHandler = new ThemeHandler(this);
+	}
+	
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		this.setLayoutPagination();
+		this.themeHandler.init();
+		this.messagesManager.getMessages();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		this.locationListener.unsetLocation();
+		this.locationManager.removeUpdates(this.locationListener);
+	}
+
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.menu, menu);
+
+		this.menu = menu;
+
+		// Disable action button (they will be activated when the phone is
+		// located)
+		setMenuItemActiveState(false);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_message:
+			LayoutInflater layoutInflater = LayoutInflater.from(this);
+			View messageDialogView = layoutInflater.inflate(R.layout.activity_message, null);
+			EditText input = (EditText) messageDialogView.findViewById(R.id.input);
+			TextView inputCount = (TextView) messageDialogView.findViewById(R.id.inputCount);
+			input.addTextChangedListener(new MessageTextChangedListener(inputCount));
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+			alertDialogBuilder.setView(messageDialogView);
+			alertDialogBuilder.setCancelable(true);
+			alertDialogBuilder.setPositiveButton("Envoyer", new OnSendMessageClickListener(input, this));
+			alertDialogBuilder.setNegativeButton("Anuler", new OnCancelMessageClickListener());
+
+			AlertDialog alertD = alertDialogBuilder.create();
+
+			alertD.show();
+			break;
+
+		case R.id.menu_preference:
+			Intent intent = new Intent();
+			intent.setClass(this, MyPreferenceActivity.class);
+			this.startActivity(intent);
+			break;
+		case R.id.menu_refresh:
+			this.messagesManager.getMessages();
+			break;
+		default:
+			break;
+		}
+		return true;
+	}
+
 
 	public void decrementPage() {
 		this.currentPage--;
@@ -111,121 +222,6 @@ public class WallActivity extends Activity {
 	private boolean needPagination() {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		return preferences.getBoolean("pagination_preference", false);
-	}
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_wall);
-
-		this.messagesManager = new MessagesManager(this);
-
-		// Pagination management
-		this.pagesInfo = (TextView) findViewById(R.id.pagesInformation);
-		this.btnPrevious = (Button) findViewById(R.id.previous);
-		this.btnPrevious.setOnClickListener(new OnPreviousButtonClickListener(this, this.btnPrevious));
-		this.btnNext = (Button) findViewById(R.id.next);
-		this.btnNext.setOnClickListener(new OnNextButtonClickListener(this, this.btnNext));
-
-		// Attach the adapter with both list view (paginated and non paginated)
-		List<Message> messages = new ArrayList<Message>();
-		this.wallAdapter = new WallAdapter(this, R.layout.message, messages);
-
-		this.list = (ListView) findViewById(R.id.messagesPaginated);
-		this.list.setAdapter(this.wallAdapter);
-		this.list.setEmptyView(findViewById(R.id.emptyPaginated));
-
-		this.list = (ListView) findViewById(R.id.messages);
-		this.list.setAdapter(this.wallAdapter);
-		this.list.setEmptyView(findViewById(R.id.empty));
-
-		// Location management
-		MyLocationListener locationListener = new MyLocationListener(this, this.wallAdapter);
-		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
-
-		// Default preferences initialization
-		this.initPreferences();
-
-		// UI initialization using preferences
-		this.themeHandler = new ThemeHandler(this);
-		this.themeHandler.init();
-
-		// Handle pagination if needed
-		this.setLayoutPagination();
-
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu, menu);
-
-		this.menu = menu;
-
-		// Disable action button (they will be activated when the phone is
-		// located)
-		setMenuItemActiveState(false);
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		// Remove the location at the end of the application
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.remove(GeoLocation.JSON_TAG_LATITUDE);
-		editor.remove(GeoLocation.JSON_TAG_LONGITUDE);
-		editor.commit();
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menu_message:
-			LayoutInflater layoutInflater = LayoutInflater.from(this);
-			View messageDialogView = layoutInflater.inflate(R.layout.activity_message, null);
-			EditText input = (EditText) messageDialogView.findViewById(R.id.input);
-			TextView inputCount = (TextView) messageDialogView.findViewById(R.id.inputCount);
-			input.addTextChangedListener(new MessageTextChangedListener(inputCount));
-			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-			alertDialogBuilder.setView(messageDialogView);
-			alertDialogBuilder.setCancelable(true);
-			alertDialogBuilder.setPositiveButton("Envoyer", new OnSendMessageClickListener(input, this));
-			alertDialogBuilder.setNegativeButton("Anuler", new OnCancelMessageClickListener());
-
-			AlertDialog alertD = alertDialogBuilder.create();
-
-			alertD.show();
-			break;
-
-		case R.id.menu_preference:
-			Intent intent = new Intent();
-			intent.setClass(this, MyPreferenceActivity.class);
-			this.startActivity(intent);
-			break;
-		case R.id.menu_refresh:
-			this.messagesManager.getMessages();
-			break;
-		default:
-			break;
-		}
-		return true;
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		this.themeHandler.init();
-		this.messagesManager.getMessages();
-		this.setLayoutPagination();
-		// Update the list in case the user change some preferences for example.
-		if (this.messages != null) {
-			this.populate(this.messages);
-		}
-
 	}
 
 	public void populate(List<Message> messages) {

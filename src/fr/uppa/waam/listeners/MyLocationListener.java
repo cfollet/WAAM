@@ -22,22 +22,21 @@ import fr.uppa.waam.views.WallActivity;
 public class MyLocationListener implements LocationListener {
 
 	WallActivity activity;
-	MessagesManager manager;
+	MessagesManager messagesManager;
 	WallAdapter wallAdapter;
 
 	public MyLocationListener(WallActivity activity, WallAdapter wallAdapter) {
 		super();
 		this.activity = activity;
 		this.wallAdapter = wallAdapter;
-		this.manager = new MessagesManager(this.activity);
+		this.messagesManager = new MessagesManager(this.activity);
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
 		this.activity.setMenuItemActiveState(true);
 		this.setLocation(location);
-		/** retrieve message from database **/
-		this.manager.getMessages();
+		this.messagesManager.getMessages();
 
 	}
 
@@ -60,9 +59,9 @@ public class MyLocationListener implements LocationListener {
 	@Override
 	public void onProviderEnabled(String provider) {
 		TextView text = (TextView) this.activity.findViewById(R.id.empty);
-		text.setText("En attente le localisation...");
+		text.setText("En attente de localisation...");
 		text = (TextView) this.activity.findViewById(R.id.emptyPaginated);
-		text.setText("En attente le localisation...");
+		text.setText("En attente de localisation...");
 	}
 
 	@Override
@@ -92,7 +91,7 @@ public class MyLocationListener implements LocationListener {
 		editor.commit();
 	}
 
-	private void unsetLocation() {
+	public void unsetLocation() {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.remove(GeoLocation.PREFERENCE_TAG_LATITUDE);

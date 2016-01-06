@@ -12,20 +12,20 @@ import android.widget.TextView;
 import fr.uppa.waam.R;
 
 public final class SeekBarPreference extends DialogPreference implements OnSeekBarChangeListener {
-
+	// Namespaces to read attributes
+	private static final String PREFERENCE_NS = "http://schemas.android.com/apk/res/fr.uppa.waam.util.seekbarpreference";
 	private static final String ANDROID_NS = "http://schemas.android.com/apk/res/android";
+	
 	// Attribute names
 	private static final String ATTR_DEFAULT_VALUE = "defaultValue";
-
 	private static final String ATTR_MAX_VALUE = "maxValue";
 	private static final String ATTR_MIN_VALUE = "minValue";
+	
 	// Default values for defaults
 	private static final int DEFAULT_CURRENT_VALUE = 250;
 	private static final int DEFAULT_MAX_VALUE = 500;
-
 	private static final int DEFAULT_MIN_VALUE = 50;
-	// Namespaces to read attributes
-	private static final String PREFERENCE_NS = "http://schemas.android.com/apk/res/fr.uppa.waam.util.seekbarpreference";
+	
 	private static final int STEP = 50;
 
 	// Current value
@@ -33,7 +33,6 @@ public final class SeekBarPreference extends DialogPreference implements OnSeekB
 	// Real defaults
 	private final int mDefaultValue;
 	private final int mMaxValue;
-
 	private final int mMinValue;
 
 	// View elements

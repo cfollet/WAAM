@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <!--  -->
-    <string name="app_name">WAAM</string>
+    <string name="app_name">WAll Around Me</string>
     <string name="action_settings">Préférences</string>
     <string name="title_activity_preference">Préférences</string>
     <string name="title_activity_message">Message</string>

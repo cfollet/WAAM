@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 import fr.uppa.waam.tasks.RetrieveMessagesTask;
@@ -42,7 +41,7 @@ public class MessagesManager {
 	}
 
 	/**
-	 * To be valid, a location must have a longitude, latitude, radius !=0
+	 * To be valid, a location must have a longitude, latitude and radius !=0
 	 * 
 	 * @return
 	 */
@@ -71,8 +70,6 @@ public class MessagesManager {
 			GeoLocation myLocation = getMyLocation();
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
 			String gender = preferences.getString(Message.PREFERENCE_TAG_GENDER, "");
-
-			Log.i("test", "Gender : " + gender);
 
 			// If the shared preferences can be retrieved and are correct
 			if (myLocation != null && !gender.isEmpty()) {

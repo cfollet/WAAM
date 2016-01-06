@@ -20,7 +20,7 @@ public class ThemeHandler {
 	public void init() {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.activity);
 
-		String gender = preferences.getString("gender_preference", "");
+		String gender = preferences.getString(Message.PREFERENCE_TAG_GENDER, "");
 
 		ActionBar actionBar = this.activity.getActionBar();
 		TextView pageInformation = (TextView) this.activity.findViewById(R.id.pagesInformation);

@@ -1,31 +1,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/input"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="10dp" >
+        android:layout_weight="0.5"
+        android:background="@android:color/transparent"
+        android:ems="10"
+        android:hint="Envoyer un message"
+        android:maxLength="500" />
 
-        <EditText
-            android:id="@+id/input"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.5"
-            android:background="@android:color/transparent"
-            android:ems="10"
-            android:maxLength="500"
-            android:hint="Envoyer un message" />
-
-        <TextView
-            android:id="@+id/inputCount"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.15"
-            android:alpha=".35"
-            android:gravity="right"
-            android:text="500"
-            android:background="@android:color/transparent" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/inputCount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.15"
+        android:alpha=".35"
+        android:background="@android:color/transparent"
+        android:gravity="right"
+        android:text="500" />
 
 </LinearLayout>
